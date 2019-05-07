@@ -1,7 +1,7 @@
 package user
 
 import (
-	"ara/components/mysql"
+	"ara-news/components/mysql"
 	"github.com/astaxie/beego/orm"
 )
 

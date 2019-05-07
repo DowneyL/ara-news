@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"ara/components/mysql"
-	"ara/helper"
-	"ara/models/user"
-	"ara/validators"
+	"ara-news/components/mysql"
+	"ara-news/helper"
+	"ara-news/models/user"
+	"ara-news/validators"
 	"strconv"
 )
 

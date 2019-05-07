@@ -1,7 +1,7 @@
 package response
 
 import (
-	"ara/helper"
+	"ara-news/helper"
 	"github.com/beego/i18n"
 )
 

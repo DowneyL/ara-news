@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"ara/validators"
+	"ara-news/validators"
 	"fmt"
 )
 

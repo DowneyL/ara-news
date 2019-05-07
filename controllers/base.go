@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"ara/boot"
-	"ara/components/response"
+	"ara-news/boot"
+	"ara-news/components/response"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"

@@ -1,10 +1,10 @@
 package boot
 
 import (
-	"ara/components/geoip"
-	"ara/components/lang"
-	"ara/components/mysql"
-	"ara/validators"
+	"ara-news/components/geoip"
+	"ara-news/components/lang"
+	"ara-news/components/mysql"
+	"ara-news/validators"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 )

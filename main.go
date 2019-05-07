@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "ara/boot"
-	_ "ara/routers"
+	_ "ara-news/boot"
+	_ "ara-news/routers"
 	"github.com/astaxie/beego"
 )
 

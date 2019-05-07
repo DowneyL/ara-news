@@ -1,7 +1,7 @@
 package test
 
 import (
-	_ "ara/routers"
+	_ "ara-news/routers"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"

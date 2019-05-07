@@ -1,6 +1,6 @@
 package mysql
 
-import "ara/helper"
+import "ara-news/helper"
 
 func GetCols(model interface{}, exceptedCols ...string) []string {
 	var cols []string
