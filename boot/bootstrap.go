@@ -4,6 +4,7 @@ import (
 	"ara-news/components/geoip"
 	"ara-news/components/lang"
 	"ara-news/components/mysql"
+	"ara-news/components/pagination"
 	"ara-news/validators"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -16,6 +17,7 @@ type Application struct {
 	Locale     lang.Locale
 	RestLocale []lang.Locale
 	Validator  validators.UniversalValidator
+	Pagination pagination.Pagination
 }
 
 func init() {
@@ -53,4 +55,8 @@ func GetLocale() lang.Locale {
 
 func GetRestLocale() []lang.Locale {
 	return App.RestLocale
+}
+
+func GetPagination() pagination.Pagination {
+	return App.Pagination
 }

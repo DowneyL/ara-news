@@ -11,7 +11,9 @@ import (
 	"ara-news/boot"
 	"ara-news/components/geoip"
 	"ara-news/components/lang"
+	"ara-news/components/pagination"
 	"ara-news/controllers"
+	"ara-news/controllers/news"
 	"ara-news/validators"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
@@ -25,12 +27,21 @@ func init() {
 		boot.App.GeoIP = geoip.InitGeoIP(context)
 
 		boot.App.Validator = validators.InitUniversalValidator(boot.App.Locale.Lang)
+
+		boot.App.Pagination = pagination.InitPagination(context)
 	})
 
 	ns := beego.NewNamespace("/v1",
 		beego.NSRouter("/hello", &controllers.HelloController{}),
 		beego.NSRouter("/user", &controllers.UserController{}, "get:GetAll;post:Create"),
 		beego.NSRouter("/user/:id([0-9]+)", &controllers.UserController{}),
+
+		beego.NSNamespace("/news",
+			//beego.NSRouter("/", &controllers.NewsController{}, "get:List;post:Create"),
+			//beego.NSRouter("/:id([0-9]+)", &controllers.NewsController{}, "get:Detail"),
+			beego.NSRouter("/category", &news.CategoryController{}, "get:List;post:Create"),
+			beego.NSRouter("/category/:id([0-9]+)", &news.CategoryController{}, "get:Detail"),
+		),
 	)
 
 	beego.AddNamespace(ns)

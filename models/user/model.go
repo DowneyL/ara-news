@@ -16,11 +16,17 @@ type Model struct {
 	UpdateAt string `orm:"column(update_at)" json:"update_at"`
 }
 
-var qs orm.QuerySeter
-
 func init() {
 	orm.RegisterModel(new(Model))
-	qs = mysql.GetQuerySetter(&Model{})
+}
+
+func InitQuerySetter(genre ...string) orm.QuerySeter {
+	var alias string
+	if len(genre) > 0 && genre[0] != "" {
+		alias = genre[0]
+	}
+
+	return mysql.GetQuerySetter(&Model{}, alias)
 }
 
 func (m *Model) TableName() string {
@@ -28,12 +34,14 @@ func (m *Model) TableName() string {
 }
 
 func FindAll() (users []Model, err error) {
+	qs := InitQuerySetter()
 	cols := mysql.GetCols(&Model{}, "IsRoot")
 	_, err = qs.All(&users, cols...)
 	return
 }
 
 func FindOneById(id int) (user Model, err error) {
+	qs := InitQuerySetter()
 	cols := mysql.GetCols(&Model{}, "IsRoot")
 	err = qs.Filter("id", id).One(&user, cols...)
 	return
