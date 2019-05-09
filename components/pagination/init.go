@@ -22,6 +22,7 @@ func initPagination() Pagination {
 
 func InitPagination(ctx *context.Context) Pagination {
 	pagination := initPagination()
+
 	page, _ := strconv.Atoi(ctx.Input.Query("page"))
 	size, _ := strconv.Atoi(ctx.Input.Query("page_size"))
 	if page > 0 {

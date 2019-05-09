@@ -7,3 +7,7 @@ type NewsCategory struct {
 	NameZH string `json:"name_zh" validate:"max=100"`
 	NameEN string `json:"name_en" validate:"required,max=100"`
 }
+
+type CategoryIds struct {
+	Ids []int64 `json:"ids" validate:"gt=0,dive,required"`
+}

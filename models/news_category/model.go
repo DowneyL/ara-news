@@ -4,7 +4,6 @@ import (
 	"ara-news/boot"
 	"ara-news/components/mysql"
 	"ara-news/validators"
-	"fmt"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -52,8 +51,7 @@ func FindAll() []*Model {
 	qs := InitQuerySetter()
 	var categories []*Model
 	pagination := boot.GetPagination()
-	fmt.Println(pagination.Limit)
-	i, _ := qs.OrderBy("-created_at").Limit(pagination.Limit, pagination.Size).All(&categories, "id", "code")
+	i, _ := qs.OrderBy("-created_at").Limit(pagination.Size, pagination.Limit).All(&categories)
 	if i == 0 {
 		return nil
 	}
@@ -61,7 +59,7 @@ func FindAll() []*Model {
 	return categories
 }
 
-func Insert(category validators.NewsCategory) (id int64, err error) {
+func Insert(category validators.NewsCategory) (int64, error) {
 	var model Model
 	model.Seq = category.Seq
 	model.Code = category.Code
@@ -74,4 +72,17 @@ func Insert(category validators.NewsCategory) (id int64, err error) {
 	o := mysql.GetOrmer("master")
 
 	return o.Insert(&model)
+}
+
+func DeleteById(id int64) (int64, error) {
+	o := mysql.GetOrmer("master")
+
+	return o.Delete(&Model{Id: id})
+}
+
+func DeleteByIds(cids validators.CategoryIds) (int64, error) {
+	ids := cids.Ids
+	qs := InitQuerySetter("master")
+
+	return qs.Filter("id__in", ids).Delete()
 }

@@ -5,6 +5,7 @@ import (
 	"ara-news/models/news_category"
 	"ara-news/validators"
 	"encoding/json"
+	"strconv"
 )
 
 type CategoryController struct {
@@ -16,13 +17,15 @@ func (nc *CategoryController) BeforeAction() {
 	switch action {
 	case "Create":
 		nc.ValidJSON(&validators.NewsCategory{})
+	case "BatchDelete":
+		nc.ValidJSON(&validators.CategoryIds{})
 	}
 }
 
 func (nc *CategoryController) List() {
 	categories := news_category.FindAll()
 	if categories == nil {
-		nc.SystemErrorJSON()
+		nc.SuccessJSON(new(struct{}))
 	}
 
 	nc.SuccessJSON(categories)
@@ -41,4 +44,30 @@ func (nc *CategoryController) Create() {
 	}
 
 	nc.SuccessJSON(new(struct{}))
+}
+
+func (nc *CategoryController) Delete() {
+	idStr := nc.Ctx.Input.Param(":id")
+	id, _ := strconv.ParseInt(idStr, 10, 64)
+	num, err := news_category.DeleteById(id)
+	if err != nil {
+		nc.SystemErrorJSON()
+	}
+	result := make(map[string]int64)
+	result["count"] = num
+
+	nc.SuccessJSON(result)
+}
+
+func (nc *CategoryController) BatchDelete() {
+	var cids validators.CategoryIds
+	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &cids)
+	num, err := news_category.DeleteByIds(cids)
+	if err != nil {
+		nc.SystemErrorJSON()
+	}
+	result := make(map[string]int64)
+	result["count"] = num
+
+	nc.SuccessJSON(result)
 }
