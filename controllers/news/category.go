@@ -20,11 +20,18 @@ func (nc *CategoryController) BeforeAction() {
 		nc.ValidJSON(&validators.NewsCategory{})
 	case "BatchDelete":
 		nc.ValidJSON(&validators.CategoryIds{})
+	case "Update":
+		nc.ValidJSON(&validators.NewsCategory{})
+	case "UpdateNameEn":
+		nc.ValidJSON(&validators.UpdateNameEn{})
 	}
 }
 
 func (nc *CategoryController) List() {
-	categories := news_category.FindAll()
+	categories, err := news_category.FindAll()
+	if err != nil {
+		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
+	}
 	if categories == nil {
 		nc.SuccessJSON(new(struct{}))
 	}
@@ -51,6 +58,38 @@ func (nc *CategoryController) Create() {
 	}
 
 	nc.SuccessJSON(new(struct{}))
+}
+
+func (nc *CategoryController) Update() {
+	var data validators.NewsCategory
+	idStr := nc.Ctx.Input.Param(":id")
+	id := helper.StringToInt64(idStr)
+	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
+	num, e := news_category.UpdateById(id, data)
+	if e != nil {
+		nc.ErrorJSON(response.QUERY_ERROR, e.Error())
+	}
+
+	result := make(map[string]int64)
+	result["affect_num"] = num
+
+	nc.SuccessJSON(result)
+}
+
+func (nc *CategoryController) UpdateNameEn() {
+	var data validators.UpdateNameEn
+	idStr := nc.Ctx.Input.Param(":id")
+	id := helper.StringToInt64(idStr)
+	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
+	num, e := news_category.UpdateNameEnById(id, data)
+	if e != nil {
+		nc.ErrorJSON(response.QUERY_ERROR, e.Error())
+	}
+
+	result := make(map[string]int64)
+	result["affect_num"] = num
+
+	nc.SuccessJSON(result)
 }
 
 func (nc *CategoryController) Delete() {

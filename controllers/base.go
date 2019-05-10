@@ -60,6 +60,12 @@ func (base *BaseController) SuccessJSON(data interface{}) {
 }
 
 func (base *BaseController) ErrorJSON(code response.ErrorCode, message string, tr ...bool) {
+	if beego.BConfig.RunMode != beego.DEV && code == response.QUERY_ERROR {
+		code = response.SYSTEM_ERROR
+		message = "system error"
+		tr[0] = true
+	}
+
 	translate := len(tr) > 0 && tr[0]
 	base.Data["json"] = base.Error(code, message, translate)
 	base.returnJson()

@@ -8,6 +8,10 @@ type NewsCategory struct {
 	NameEN string `json:"name_en" validate:"required,max=100"`
 }
 
+type UpdateNameEn struct {
+	NameEN string `json:"name_en" validate:"required,max=100"`
+}
+
 type CategoryIds struct {
 	Ids []int64 `json:"ids" validate:"gt=0,dive,required"`
 }

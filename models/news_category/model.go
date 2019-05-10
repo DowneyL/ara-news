@@ -8,17 +8,6 @@ import (
 	"time"
 )
 
-//type Model struct {
-//	Id int64 `orm:"column(id)"`
-//	Code string `orm:"column(code)"`
-//	Seq int `orm:"column(seq)"`
-//	Icon string `orm:"column(icon)"`
-//	NameZh string `orm:"column(name_zh)"`
-//	NameEn string `orm:"column(name_en)"`
-//	CreatedAt int64 `orm:"column(created_at)"`
-//	UpdatedAt int64 `orm:"column(updated_at)"`
-//}
-
 type Model struct {
 	Id        int64  `json:"id,omitempty"`
 	Code      string `json:"code,omitempty"`
@@ -47,16 +36,16 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 	return mysql.GetQuerySetter(&Model{}, alias)
 }
 
-func FindAll() []*Model {
+func FindAll() ([]*Model, error) {
 	qs := InitQuerySetter()
 	var categories []*Model
 	pagination := boot.GetPagination()
-	i, _ := qs.OrderBy("-seq", "-created_at").Limit(pagination.Size, pagination.Limit).All(&categories)
-	if i == 0 {
-		return nil
+	i, err := qs.OrderBy("-seq", "-created_at").Limit(pagination.Size, pagination.Limit).All(&categories)
+	if err != nil || i == 0 {
+		return nil, err
 	}
 
-	return categories
+	return categories, nil
 }
 
 func FindById(id int64) (Model, error) {
@@ -83,6 +72,28 @@ func Insert(category validators.NewsCategory) (int64, error) {
 	o := mysql.GetOrmer("master")
 
 	return o.Insert(&model)
+}
+
+func UpdateById(id int64, category validators.NewsCategory) (int64, error) {
+	qs := InitQuerySetter("master")
+	now := time.Now().Unix()
+	return qs.Filter("id", id).Update(orm.Params{
+		"code":       category.Code,
+		"seq":        category.Seq,
+		"icon":       category.Icon,
+		"name_zh":    category.NameZH,
+		"name_en":    category.NameEN,
+		"updated_at": now,
+	})
+}
+
+func UpdateNameEnById(id int64, categoryName validators.UpdateNameEn) (int64, error) {
+	qs := InitQuerySetter("master")
+	now := time.Now().Unix()
+	return qs.Filter("id", id).Update(orm.Params{
+		"name_en":    categoryName.NameEN,
+		"updated_at": now,
+	})
 }
 
 func DeleteById(id int64) (int64, error) {
