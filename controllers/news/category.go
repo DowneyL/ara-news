@@ -58,7 +58,7 @@ func (nc *CategoryController) Create() {
 		nc.SystemErrorJSON()
 	}
 
-	nc.SuccessJSON(helper.NewAffectNum(num))
+	nc.SuccessJSON(helper.NewInsertId(num))
 }
 
 func (nc *CategoryController) Update() {
