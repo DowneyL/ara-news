@@ -51,12 +51,23 @@ func FindAll() []*Model {
 	qs := InitQuerySetter()
 	var categories []*Model
 	pagination := boot.GetPagination()
-	i, _ := qs.OrderBy("-created_at").Limit(pagination.Size, pagination.Limit).All(&categories)
+	i, _ := qs.OrderBy("-seq", "-created_at").Limit(pagination.Size, pagination.Limit).All(&categories)
 	if i == 0 {
 		return nil
 	}
 
 	return categories
+}
+
+func FindById(id int64) (Model, error) {
+	qs := InitQuerySetter()
+	var category Model
+	err := qs.Filter("id", id).One(&category)
+	if err == orm.ErrNoRows {
+		err = nil
+	}
+
+	return category, err
 }
 
 func Insert(category validators.NewsCategory) (int64, error) {
@@ -80,8 +91,8 @@ func DeleteById(id int64) (int64, error) {
 	return o.Delete(&Model{Id: id})
 }
 
-func DeleteByIds(cids validators.CategoryIds) (int64, error) {
-	ids := cids.Ids
+func DeleteByIds(cIds validators.CategoryIds) (int64, error) {
+	ids := cIds.Ids
 	qs := InitQuerySetter("master")
 
 	return qs.Filter("id__in", ids).Delete()

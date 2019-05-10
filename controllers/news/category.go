@@ -1,11 +1,12 @@
 package news
 
 import (
+	"ara-news/components/response"
 	"ara-news/controllers"
+	"ara-news/helper"
 	"ara-news/models/news_category"
 	"ara-news/validators"
 	"encoding/json"
-	"strconv"
 )
 
 type CategoryController struct {
@@ -32,8 +33,14 @@ func (nc *CategoryController) List() {
 }
 
 func (nc *CategoryController) Detail() {
-	id := nc.Ctx.Input.Param(":id")
-	nc.Ctx.WriteString("Category Detail " + id)
+	idStr := nc.Ctx.Input.Param(":id")
+	id := helper.StringToInt64(idStr)
+	category, err := news_category.FindById(id)
+	if err != nil {
+		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
+	}
+
+	nc.SuccessJSON(category)
 }
 
 func (nc *CategoryController) Create() {
@@ -48,7 +55,7 @@ func (nc *CategoryController) Create() {
 
 func (nc *CategoryController) Delete() {
 	idStr := nc.Ctx.Input.Param(":id")
-	id, _ := strconv.ParseInt(idStr, 10, 64)
+	id := helper.StringToInt64(idStr)
 	num, err := news_category.DeleteById(id)
 	if err != nil {
 		nc.SystemErrorJSON()
@@ -60,9 +67,9 @@ func (nc *CategoryController) Delete() {
 }
 
 func (nc *CategoryController) BatchDelete() {
-	var cids validators.CategoryIds
-	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &cids)
-	num, err := news_category.DeleteByIds(cids)
+	var cIds validators.CategoryIds
+	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &cIds)
+	num, err := news_category.DeleteByIds(cIds)
 	if err != nil {
 		nc.SystemErrorJSON()
 	}
