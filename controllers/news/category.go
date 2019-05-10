@@ -53,11 +53,12 @@ func (nc *CategoryController) Detail() {
 func (nc *CategoryController) Create() {
 	var data validators.NewsCategory
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
-	if _, err := news_category.Insert(data); err != nil {
+	num, err := news_category.Insert(data)
+	if err != nil {
 		nc.SystemErrorJSON()
 	}
 
-	nc.SuccessJSON(new(struct{}))
+	nc.SuccessJSON(helper.NewAffectNum(num))
 }
 
 func (nc *CategoryController) Update() {
@@ -70,10 +71,7 @@ func (nc *CategoryController) Update() {
 		nc.ErrorJSON(response.QUERY_ERROR, e.Error())
 	}
 
-	result := make(map[string]int64)
-	result["affect_num"] = num
-
-	nc.SuccessJSON(result)
+	nc.SuccessJSON(helper.NewAffectNum(num))
 }
 
 func (nc *CategoryController) UpdateNameEn() {
@@ -86,10 +84,7 @@ func (nc *CategoryController) UpdateNameEn() {
 		nc.ErrorJSON(response.QUERY_ERROR, e.Error())
 	}
 
-	result := make(map[string]int64)
-	result["affect_num"] = num
-
-	nc.SuccessJSON(result)
+	nc.SuccessJSON(helper.NewAffectNum(num))
 }
 
 func (nc *CategoryController) Delete() {
@@ -99,10 +94,8 @@ func (nc *CategoryController) Delete() {
 	if err != nil {
 		nc.SystemErrorJSON()
 	}
-	result := make(map[string]int64)
-	result["count"] = num
 
-	nc.SuccessJSON(result)
+	nc.SuccessJSON(helper.NewAffectNum(num))
 }
 
 func (nc *CategoryController) BatchDelete() {
@@ -112,8 +105,6 @@ func (nc *CategoryController) BatchDelete() {
 	if err != nil {
 		nc.SystemErrorJSON()
 	}
-	result := make(map[string]int64)
-	result["count"] = num
 
-	nc.SuccessJSON(result)
+	nc.SuccessJSON(helper.NewAffectNum(num))
 }
