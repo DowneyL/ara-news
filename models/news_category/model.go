@@ -4,7 +4,6 @@ import (
 	"ara-news/boot"
 	"ara-news/components/mysql"
 	"ara-news/validators"
-	"fmt"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -41,7 +40,6 @@ func FindLimit(query validators.QueryNewsCategory) ([]*Model, error) {
 	qs := InitQuerySetter()
 	var categories []*Model
 	pagination := boot.GetPagination()
-	fmt.Println(query)
 	if query.Code != "" {
 		qs = qs.Filter("code", query.Code)
 	}
