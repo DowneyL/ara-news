@@ -17,7 +17,7 @@ type CategoryIds struct {
 }
 
 type QueryNewsCategory struct {
-	Code string `form:"code" validate:"max=50"`
+	Code   string `form:"code" validate:"max=50"`
 	NameZH string `form:"name_zh" validate:"max=100"`
 	NameEN string `form:"name_en" validate:"max=100"`
 }
