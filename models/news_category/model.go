@@ -38,7 +38,7 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 }
 
 func FindLimit(query validators.QueryNewsCategory) ([]*Model, error) {
-	qs := InitQuerySetter("master")
+	qs := InitQuerySetter()
 	var categories []*Model
 	pagination := boot.GetPagination()
 	fmt.Println(query)
