@@ -6,25 +6,31 @@ import (
 )
 
 type Model struct {
-	Id             int    `orm:"column(id)"`
-	Cid            int    `orm:"column(cid)"`
-	AttributeSetId int    `orm:"column(attribute_set_id)"`
-	Seq            int    `orm:"column(seq)"`
-	IsHidden       int    `orm:"column(is_hidden)"`
-	Author         string `orm:"column(author)"`
-	CoverUrl       string `orm:"column(cover_url)"`
-	PublishedAt    int    `orm:"column(published_at)"`
-	CreatedAt      int    `orm:"column(created_at)"`
-	UpdatedAt      int    `orm:"column(updated_at)"`
+	Id             int64  `json:"id,omitempty"`
+	Cid            int64  `json:"cid,omitempty"`
+	AttributeSetId int    `json:"attribute_set_id,omitempty"`
+	Seq            int    `json:"seq,omitempty"`
+	IsHidden       int    `json:"is_hidden,omitempty"`
+	Author         string `json:"author,omitempty"`
+	CoverUrl       string `json:"cover_url,omitempty"`
+	PublishedAt    int64  `json:"published_at,omitempty"`
+	CreatedAt      int64  `json:"created_at,omitempty"`
+	UpdatedAt      int64  `json:"updated_at,omitempty"`
 }
-
-var qs orm.QuerySeter
 
 func init() {
 	orm.RegisterModel(new(Model))
-	qs = mysql.GetQuerySetter(&Model{})
 }
 
 func (m *Model) TableName() string {
 	return "news_info"
+}
+
+func InitQuerySetter(genre ...string) orm.QuerySeter {
+	var alias string
+	if len(genre) > 0 && genre[0] != "" {
+		alias = genre[0]
+	}
+
+	return mysql.GetQuerySetter(&Model{}, alias)
 }
