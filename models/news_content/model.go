@@ -5,6 +5,7 @@ import (
 	"ara-news/components/mysql"
 	newsValidator "ara-news/validators/news"
 	"github.com/astaxie/beego/orm"
+	"html/template"
 )
 
 type Model struct {
@@ -14,6 +15,8 @@ type Model struct {
 	Title   string `json:"title,omitempty"`
 	Content string `json:"content,omitempty"`
 }
+
+var model Model
 
 func init() {
 	orm.RegisterModel(new(Model))
@@ -33,11 +36,17 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 }
 
 func NewModel(nid int64, content newsValidator.Content) Model {
-	var model Model
 	model.Nid = nid
 	model.Lang = lang.GetLangId(content.Lang)
-	model.Title = content.Title
-	model.Content = content.Content
+	model.Title = template.HTMLEscapeString(content.Title)
+	model.Content = template.HTMLEscapeString(content.Content)
 
 	return model
+}
+
+func FindByNId(nid int64, cols ...string) (Model, error) {
+	qs := InitQuerySetter()
+	err := qs.Filter("nid", nid).One(&model, cols...)
+
+	return model, err
 }

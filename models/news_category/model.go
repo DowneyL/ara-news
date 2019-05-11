@@ -19,6 +19,11 @@ type Model struct {
 	UpdatedAt int64  `json:"updated_at,omitempty"`
 }
 
+var (
+	model      Model
+	categories []*Model
+)
+
 func init() {
 	orm.RegisterModel(new(Model))
 }
@@ -38,7 +43,6 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 
 func FindLimit(query newsValidator.QueryCategory) ([]*Model, error) {
 	qs := InitQuerySetter()
-	var categories []*Model
 	pagination := boot.GetPagination()
 	if query.Code != "" {
 		qs = qs.Filter("code", query.Code)
@@ -58,30 +62,21 @@ func FindLimit(query newsValidator.QueryCategory) ([]*Model, error) {
 	return categories, nil
 }
 
-func FindById(id int64) (Model, error) {
+func FindById(id int64, cols ...string) (Model, error) {
 	qs := InitQuerySetter()
-	var category Model
-	err := qs.Filter("id", id).One(&category)
-	if err == orm.ErrNoRows {
-		err = nil
-	}
+	err := qs.Filter("id", id).One(&model, cols...)
 
-	return category, err
+	return model, err
 }
 
-func FindByCode(code string) (Model, error) {
+func FindByCode(code string, cols ...string) (Model, error) {
 	qs := InitQuerySetter()
-	var category Model
-	err := qs.Filter("code", code).One(&category)
-	if err == orm.ErrNoRows {
-		err = nil
-	}
+	err := qs.Filter("code", code).One(&model, cols...)
 
-	return category, err
+	return model, err
 }
 
 func Insert(category newsValidator.Category) (int64, error) {
-	var model Model
 	model.Seq = category.Seq
 	model.Code = category.Code
 	model.Icon = category.Icon
