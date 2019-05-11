@@ -3,7 +3,7 @@ package news_category
 import (
 	"ara-news/boot"
 	"ara-news/components/mysql"
-	"ara-news/validators"
+	newsValidator "ara-news/validators/news"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -36,7 +36,7 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 	return mysql.GetQuerySetter(&Model{}, alias)
 }
 
-func FindLimit(query validators.QueryNewsCategory) ([]*Model, error) {
+func FindLimit(query newsValidator.QueryCategory) ([]*Model, error) {
 	qs := InitQuerySetter()
 	var categories []*Model
 	pagination := boot.GetPagination()
@@ -69,7 +69,7 @@ func FindById(id int64) (Model, error) {
 	return category, err
 }
 
-func Insert(category validators.NewsCategory) (int64, error) {
+func Insert(category newsValidator.Category) (int64, error) {
 	var model Model
 	model.Seq = category.Seq
 	model.Code = category.Code
@@ -84,7 +84,7 @@ func Insert(category validators.NewsCategory) (int64, error) {
 	return o.Insert(&model)
 }
 
-func UpdateById(id int64, category validators.NewsCategory) (int64, error) {
+func UpdateById(id int64, category newsValidator.Category) (int64, error) {
 	qs := InitQuerySetter("master")
 	now := time.Now().Unix()
 	return qs.Filter("id", id).Update(orm.Params{
@@ -97,7 +97,7 @@ func UpdateById(id int64, category validators.NewsCategory) (int64, error) {
 	})
 }
 
-func UpdateNameEnById(id int64, categoryName validators.UpdateNameEn) (int64, error) {
+func UpdateNameEnById(id int64, categoryName newsValidator.UpdateNameEn) (int64, error) {
 	qs := InitQuerySetter("master")
 	now := time.Now().Unix()
 	return qs.Filter("id", id).Update(orm.Params{
@@ -112,7 +112,7 @@ func DeleteById(id int64) (int64, error) {
 	return o.Delete(&Model{Id: id})
 }
 
-func DeleteByIds(cIds validators.CategoryIds) (int64, error) {
+func DeleteByIds(cIds newsValidator.CategoryIds) (int64, error) {
 	ids := cIds.Ids
 	qs := InitQuerySetter("master")
 

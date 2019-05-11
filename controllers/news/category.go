@@ -5,7 +5,7 @@ import (
 	"ara-news/controllers"
 	"ara-news/helper"
 	"ara-news/models/news_category"
-	"ara-news/validators"
+	newsValidator "ara-news/validators/news"
 	"encoding/json"
 )
 
@@ -17,20 +17,20 @@ func (nc *CategoryController) BeforeAction() {
 	_, action := nc.GetControllerAndAction()
 	switch action {
 	case "List":
-		nc.ValidForm(&validators.QueryNewsCategory{})
+		nc.ValidForm(&newsValidator.QueryCategory{})
 	case "Create":
-		nc.ValidJSON(&validators.NewsCategory{})
+		nc.ValidJSON(&newsValidator.Category{})
 	case "BatchDelete":
-		nc.ValidJSON(&validators.CategoryIds{})
+		nc.ValidJSON(&newsValidator.CategoryIds{})
 	case "Update":
-		nc.ValidJSON(&validators.NewsCategory{})
+		nc.ValidJSON(&newsValidator.Category{})
 	case "UpdateNameEn":
-		nc.ValidJSON(&validators.UpdateNameEn{})
+		nc.ValidJSON(&newsValidator.UpdateNameEn{})
 	}
 }
 
 func (nc *CategoryController) List() {
-	var query = validators.QueryNewsCategory{}
+	var query newsValidator.QueryCategory
 	_ = nc.ParseForm(&query)
 	categories, err := news_category.FindLimit(query)
 	if err != nil {
@@ -55,7 +55,7 @@ func (nc *CategoryController) Detail() {
 }
 
 func (nc *CategoryController) Create() {
-	var data validators.NewsCategory
+	var data newsValidator.Category
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
 	num, err := news_category.Insert(data)
 	if err != nil {
@@ -66,7 +66,7 @@ func (nc *CategoryController) Create() {
 }
 
 func (nc *CategoryController) Update() {
-	var data validators.NewsCategory
+	var data newsValidator.Category
 	idStr := nc.Ctx.Input.Param(":id")
 	id := helper.StringToInt64(idStr)
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
@@ -79,7 +79,7 @@ func (nc *CategoryController) Update() {
 }
 
 func (nc *CategoryController) UpdateNameEn() {
-	var data validators.UpdateNameEn
+	var data newsValidator.UpdateNameEn
 	idStr := nc.Ctx.Input.Param(":id")
 	id := helper.StringToInt64(idStr)
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
@@ -103,7 +103,7 @@ func (nc *CategoryController) Delete() {
 }
 
 func (nc *CategoryController) BatchDelete() {
-	var cIds validators.CategoryIds
+	var cIds newsValidator.CategoryIds
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &cIds)
 	num, err := news_category.DeleteByIds(cIds)
 	if err != nil {

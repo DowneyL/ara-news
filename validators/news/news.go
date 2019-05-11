@@ -1,4 +1,4 @@
-package validators
+package news
 
 type News struct {
 	Info
