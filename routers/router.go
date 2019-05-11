@@ -42,7 +42,7 @@ func init() {
 			beego.NSNamespace("/category",
 				beego.NSRouter("/", &news.CategoryController{}, "get:List;post:Create;delete:BatchDelete"),
 				beego.NSRouter("/:id([0-9]+)", &news.CategoryController{}, "get:Detail;delete:Delete;put:Update"),
-				beego.NSRouter("/name-en/:id([0-9]+)", &news.CategoryController{}, "patch:UpdateNameEn"),
+				beego.NSRouter("/:id([0-9]+)/name-en", &news.CategoryController{}, "patch:UpdateNameEn"),
 			),
 		),
 	)

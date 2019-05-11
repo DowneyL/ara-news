@@ -15,3 +15,9 @@ type UpdateNameEn struct {
 type CategoryIds struct {
 	Ids []int64 `json:"ids" validate:"gt=0,dive,required"`
 }
+
+type QueryNewsCategory struct {
+	Code string `form:"code" validate:"max=50"`
+	NameZH string `form:"name_zh" validate:"max=100"`
+	NameEN string `form:"name_en" validate:"max=100"`
+}

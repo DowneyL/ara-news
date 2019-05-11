@@ -4,6 +4,7 @@ import (
 	"ara-news/boot"
 	"ara-news/components/mysql"
 	"ara-news/validators"
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -36,10 +37,21 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 	return mysql.GetQuerySetter(&Model{}, alias)
 }
 
-func FindAll() ([]*Model, error) {
-	qs := InitQuerySetter()
+func FindLimit(query validators.QueryNewsCategory) ([]*Model, error) {
+	qs := InitQuerySetter("master")
 	var categories []*Model
 	pagination := boot.GetPagination()
+	fmt.Println(query)
+	if query.Code != "" {
+		qs = qs.Filter("code", query.Code)
+	}
+	if query.NameEN != "" {
+		qs = qs.Filter("name_en", query.NameEN)
+	}
+	if query.NameZH != "" {
+		qs = qs.Filter("name_zh", query.NameZH)
+	}
+
 	i, err := qs.OrderBy("-seq", "-created_at").Limit(pagination.Size, pagination.Limit).All(&categories)
 	if err != nil || i == 0 {
 		return nil, err

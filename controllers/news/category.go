@@ -16,6 +16,8 @@ type CategoryController struct {
 func (nc *CategoryController) BeforeAction() {
 	_, action := nc.GetControllerAndAction()
 	switch action {
+	case "List":
+		nc.ValidForm(&validators.QueryNewsCategory{})
 	case "Create":
 		nc.ValidJSON(&validators.NewsCategory{})
 	case "BatchDelete":
@@ -28,7 +30,9 @@ func (nc *CategoryController) BeforeAction() {
 }
 
 func (nc *CategoryController) List() {
-	categories, err := news_category.FindAll()
+	var query = validators.QueryNewsCategory{}
+	_ = nc.ParseForm(&query)
+	categories, err := news_category.FindLimit(query)
 	if err != nil {
 		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
 	}
