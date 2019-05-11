@@ -59,7 +59,7 @@ func (nc *CategoryController) Create() {
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
 	num, err := news_category.Insert(data)
 	if err != nil {
-		nc.SystemErrorJSON()
+		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
 	}
 
 	nc.SuccessJSON(helper.NewInsertId(num))

@@ -103,6 +103,10 @@ func (base *BaseController) ValidForm(obj interface{}) {
 
 func (base *BaseController) ValidJSON(obj interface{}) {
 	if err := json.Unmarshal(base.Ctx.Input.RequestBody, obj); err != nil {
+		if beego.BConfig.RunMode == beego.DEV {
+			base.ErrorJSON(response.PARAMS_ERROR, err.Error())
+		}
+
 		base.InvalidArgumentJSON()
 	}
 	base.Valid(obj)

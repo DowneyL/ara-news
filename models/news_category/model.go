@@ -69,6 +69,17 @@ func FindById(id int64) (Model, error) {
 	return category, err
 }
 
+func FindByCode(code string) (Model, error) {
+	qs := InitQuerySetter()
+	var category Model
+	err := qs.Filter("code", code).One(&category)
+	if err == orm.ErrNoRows {
+		err = nil
+	}
+
+	return category, err
+}
+
 func Insert(category newsValidator.Category) (int64, error) {
 	var model Model
 	model.Seq = category.Seq

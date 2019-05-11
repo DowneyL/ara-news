@@ -1,7 +1,9 @@
 package news_content
 
 import (
+	"ara-news/components/lang"
 	"ara-news/components/mysql"
+	newsValidator "ara-news/validators/news"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -28,4 +30,14 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 	}
 
 	return mysql.GetQuerySetter(&Model{}, alias)
+}
+
+func NewModel(nid int64, content newsValidator.Content) Model {
+	var model Model
+	model.Nid = nid
+	model.Lang = lang.GetLangId(content.Lang)
+	model.Title = content.Title
+	model.Content = content.Content
+
+	return model
 }

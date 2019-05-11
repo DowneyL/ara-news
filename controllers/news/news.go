@@ -1,7 +1,10 @@
 package news
 
 import (
+	"ara-news/components/response"
 	"ara-news/controllers"
+	"ara-news/helper"
+	newsService "ara-news/services/news"
 	newsValidator "ara-news/validators/news"
 	"encoding/json"
 )
@@ -21,4 +24,10 @@ func (c *Controller) BeforeAction() {
 func (c *Controller) Create() {
 	var data newsValidator.News
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &data)
+	id, err := newsService.CreateNews(data)
+	if err != nil {
+		c.ErrorJSON(response.QUERY_ERROR, err.Error())
+	}
+
+	c.SuccessJSON(helper.NewInsertId(id))
 }

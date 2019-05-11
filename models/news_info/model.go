@@ -2,7 +2,12 @@ package news_info
 
 import (
 	"ara-news/components/mysql"
+	"ara-news/helper"
+	"ara-news/models/news_category"
+	newsValidator "ara-news/validators/news"
+	"errors"
 	"github.com/astaxie/beego/orm"
+	"time"
 )
 
 type Model struct {
@@ -33,4 +38,34 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 	}
 
 	return mysql.GetQuerySetter(&Model{}, alias)
+}
+
+func NewModel(info newsValidator.Info) (Model, error) {
+	var model Model
+	category, err := news_category.FindByCode(info.CategoryCode)
+	if err != nil {
+		return model, err
+	}
+	if category.Id == 0 {
+		return model, errors.New("category code not exist")
+	}
+
+	now := time.Now().Unix()
+	model.Cid = category.Id
+	model.AttributeSetId = helper.GetAttrSetId(info.Platform)
+	model.Seq = info.Seq
+	if info.IsHidden {
+		model.IsHidden = 1
+	}
+	model.Author = info.Author
+	model.CoverUrl = info.CoverUrl
+	if info.PublishedAt != 0 {
+		model.PublishedAt = info.PublishedAt
+	} else {
+		model.PublishedAt = now
+	}
+	model.CreatedAt = now
+	model.UpdatedAt = now
+
+	return model, nil
 }
