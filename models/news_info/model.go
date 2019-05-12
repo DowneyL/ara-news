@@ -22,8 +22,6 @@ type Model struct {
 	UpdatedAt      helper.Timestamp `json:"-"`
 }
 
-var model Model
-
 func init() {
 	orm.RegisterModel(new(Model))
 }
@@ -42,6 +40,7 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 }
 
 func NewModel(info newsValidator.Info) (Model, error) {
+	var model Model
 	category, err := news_category.FindByCode(info.CategoryCode)
 	if err != nil {
 		return model, err
@@ -71,6 +70,7 @@ func NewModel(info newsValidator.Info) (Model, error) {
 }
 
 func FindById(id int64, cols ...string) (Model, error) {
+	var model Model
 	qs := InitQuerySetter()
 	err := qs.Filter("id", id).One(&model, cols...)
 

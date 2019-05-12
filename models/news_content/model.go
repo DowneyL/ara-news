@@ -16,8 +16,6 @@ type Model struct {
 	Content string `json:"content,omitempty"`
 }
 
-var model Model
-
 func init() {
 	orm.RegisterModel(new(Model))
 }
@@ -36,6 +34,7 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 }
 
 func NewModel(nid int64, content newsValidator.Content) Model {
+	var model Model
 	model.Nid = nid
 	model.Lang = lang.GetLangId(content.Lang)
 	model.Title = template.HTMLEscapeString(content.Title)
@@ -45,6 +44,7 @@ func NewModel(nid int64, content newsValidator.Content) Model {
 }
 
 func FindByNId(nid int64, cols ...string) (Model, error) {
+	var model Model
 	qs := InitQuerySetter()
 	err := qs.Filter("nid", nid).One(&model, cols...)
 

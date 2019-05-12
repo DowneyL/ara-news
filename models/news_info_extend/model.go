@@ -11,8 +11,6 @@ type Model struct {
 	ViewCount int64 `json:"view_count"`
 }
 
-var model Model
-
 func init() {
 	orm.RegisterModel(new(Model))
 }
@@ -31,12 +29,14 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 }
 
 func NewModel(nid int64) Model {
+	var model Model
 	model.Nid = nid
 
 	return model
 }
 
 func FindByNid(nid int64, cols ...string) (Model, error) {
+	var model Model
 	qs := InitQuerySetter()
 	err := qs.Filter("nid", nid).One(&model, cols...)
 

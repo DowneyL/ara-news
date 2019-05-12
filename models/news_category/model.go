@@ -19,11 +19,6 @@ type Model struct {
 	UpdatedAt helper.Timestamp `json:"-"`
 }
 
-var (
-	model      Model
-	categories []*Model
-)
-
 func init() {
 	orm.RegisterModel(new(Model))
 }
@@ -42,6 +37,7 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 }
 
 func FindLimit(query newsValidator.QueryCategory) ([]*Model, error) {
+	var categories []*Model
 	qs := InitQuerySetter()
 	pagination := boot.GetPagination()
 	if query.Code != "" {
@@ -63,6 +59,7 @@ func FindLimit(query newsValidator.QueryCategory) ([]*Model, error) {
 }
 
 func FindById(id int64, cols ...string) (Model, error) {
+	var model Model
 	qs := InitQuerySetter()
 	err := qs.Filter("id", id).One(&model, cols...)
 
@@ -70,6 +67,7 @@ func FindById(id int64, cols ...string) (Model, error) {
 }
 
 func FindByCode(code string, cols ...string) (Model, error) {
+	var model Model
 	qs := InitQuerySetter()
 	err := qs.Filter("code", code).One(&model, cols...)
 
@@ -77,6 +75,7 @@ func FindByCode(code string, cols ...string) (Model, error) {
 }
 
 func Insert(category newsValidator.Category) (int64, error) {
+	var model Model
 	model.Seq = category.Seq
 	model.Code = category.Code
 	model.Icon = category.Icon
