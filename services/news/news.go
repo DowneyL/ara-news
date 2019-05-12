@@ -11,6 +11,7 @@ import (
 
 type News struct {
 	news_info.Model
+	Platform string                 `json:"platform"`
 	Category news_category.Model    `json:"category"`
 	Content  news_content.Model     `json:"content"`
 	Extend   news_info_extend.Model `json:"extend"`
@@ -59,19 +60,23 @@ func FindById(id int64) (News, error) {
 		return news, err
 	}
 	news.Model = info
-	fields := []string{"lang", "title", "content"}
+	news.Platform = info.AttributeSetId.String()
+
+	fields := []string{"id", "lang", "title", "content"}
 	content, err := news_content.FindByNId(id, fields...)
 	if err != nil {
 		return news, err
 	}
 	news.Content = content
+
 	fields = []string{"view_count"}
 	extend, err := news_info_extend.FindByNid(id, fields...)
 	if err != nil {
 		return news, err
 	}
 	news.Extend = extend
-	fields = []string{"code", "icon", "name_zh", "name_en"}
+
+	fields = []string{"id", "code", "icon", "name_zh", "name_en"}
 	category, err := news_category.FindById(info.Cid, fields...)
 	if err != nil {
 		return news, err
