@@ -5,6 +5,7 @@ import (
 	"ara-news/controllers"
 	"ara-news/helper"
 	"ara-news/models/news_category"
+	newsService "ara-news/services/news"
 	newsValidator "ara-news/validators/news"
 	"encoding/json"
 )
@@ -44,12 +45,16 @@ func (nc *CategoryController) List() {
 }
 
 func (nc *CategoryController) Detail() {
+	var category newsService.Category
 	idStr := nc.Ctx.Input.Param(":id")
 	id := helper.StringToInt64(idStr)
-	category, err := news_category.FindById(id)
+	model, err := news_category.FindById(id)
 	if err != nil {
 		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
 	}
+	category.Model = model
+	category.CreatedDate = model.CreatedAt.String()
+	category.UpdatedDate = model.UpdatedAt.String()
 
 	nc.SuccessJSON(category)
 }
