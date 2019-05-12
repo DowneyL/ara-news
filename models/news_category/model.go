@@ -3,20 +3,20 @@ package news_category
 import (
 	"ara-news/boot"
 	"ara-news/components/mysql"
+	"ara-news/helper"
 	newsValidator "ara-news/validators/news"
 	"github.com/astaxie/beego/orm"
-	"time"
 )
 
 type Model struct {
-	Id        int64  `json:"id,omitempty"`
-	Code      string `json:"code,omitempty"`
-	Seq       int    `json:"seq,omitempty"`
-	Icon      string `json:"icon,omitempty"`
-	NameZh    string `json:"name_zh,omitempty"`
-	NameEn    string `json:"name_en,omitempty"`
-	CreatedAt int64  `json:"created_at,omitempty"`
-	UpdatedAt int64  `json:"updated_at,omitempty"`
+	Id        int64            `json:"id,omitempty"`
+	Code      string           `json:"code,omitempty"`
+	Seq       int              `json:"seq,omitempty"`
+	Icon      string           `json:"icon,omitempty"`
+	NameZh    string           `json:"name_zh,omitempty"`
+	NameEn    string           `json:"name_en,omitempty"`
+	CreatedAt helper.Timestamp `json:"-"`
+	UpdatedAt helper.Timestamp `json:"-"`
 }
 
 var (
@@ -82,7 +82,7 @@ func Insert(category newsValidator.Category) (int64, error) {
 	model.Icon = category.Icon
 	model.NameZh = category.NameZH
 	model.NameEn = category.NameEN
-	now := time.Now().Unix()
+	now := helper.NewTimestamp()
 	model.CreatedAt = now
 	model.UpdatedAt = now
 	o := mysql.GetOrmer("master")
@@ -92,7 +92,7 @@ func Insert(category newsValidator.Category) (int64, error) {
 
 func UpdateById(id int64, category newsValidator.Category) (int64, error) {
 	qs := InitQuerySetter("master")
-	now := time.Now().Unix()
+	now := helper.NewTimestamp()
 	return qs.Filter("id", id).Update(orm.Params{
 		"code":       category.Code,
 		"seq":        category.Seq,
@@ -105,7 +105,7 @@ func UpdateById(id int64, category newsValidator.Category) (int64, error) {
 
 func UpdateNameEnById(id int64, categoryName newsValidator.UpdateNameEn) (int64, error) {
 	qs := InitQuerySetter("master")
-	now := time.Now().Unix()
+	now := helper.NewTimestamp()
 	return qs.Filter("id", id).Update(orm.Params{
 		"name_en":    categoryName.NameEN,
 		"updated_at": now,

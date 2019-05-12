@@ -7,20 +7,19 @@ import (
 	newsValidator "ara-news/validators/news"
 	"errors"
 	"github.com/astaxie/beego/orm"
-	"time"
 )
 
 type Model struct {
-	Id             int64           `json:"id,omitempty"`
-	Cid            int64           `json:"cid,omitempty"`
-	AttributeSetId helper.Platform `json:"attribute_set_id,omitempty"`
-	Seq            int             `json:"seq,omitempty"`
-	IsHidden       int             `json:"is_hidden,omitempty"`
-	Author         string          `json:"author,omitempty"`
-	CoverUrl       string          `json:"cover_url,omitempty"`
-	PublishedAt    int64           `json:"published_at,omitempty"`
-	CreatedAt      int64           `json:"created_at,omitempty"`
-	UpdatedAt      int64           `json:"updated_at,omitempty"`
+	Id             int64            `json:"id,omitempty"`
+	Cid            int64            `json:"cid,omitempty"`
+	AttributeSetId helper.Platform  `json:"-"`
+	Seq            int              `json:"seq,omitempty"`
+	IsHidden       int              `json:"is_hidden,omitempty"`
+	Author         string           `json:"author,omitempty"`
+	CoverUrl       string           `json:"cover_url,omitempty"`
+	PublishedAt    helper.Timestamp `json:"-"`
+	CreatedAt      helper.Timestamp `json:"-"`
+	UpdatedAt      helper.Timestamp `json:"-"`
 }
 
 var model Model
@@ -51,7 +50,7 @@ func NewModel(info newsValidator.Info) (Model, error) {
 		return model, errors.New("category code not exist")
 	}
 
-	now := time.Now().Unix()
+	now := helper.NewTimestamp()
 	model.Cid = category.Id
 	model.AttributeSetId = helper.GetAttrSetId(info.Platform)
 	model.Seq = info.Seq
@@ -61,7 +60,7 @@ func NewModel(info newsValidator.Info) (Model, error) {
 	model.Author = info.Author
 	model.CoverUrl = info.CoverUrl
 	if info.PublishedAt != 0 {
-		model.PublishedAt = info.PublishedAt
+		model.PublishedAt = helper.NewTimestamp(info.PublishedAt)
 	} else {
 		model.PublishedAt = now
 	}
