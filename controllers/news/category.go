@@ -8,6 +8,7 @@ import (
 	newsService "ara-news/services/news"
 	newsValidator "ara-news/validators/news"
 	"encoding/json"
+	"github.com/astaxie/beego/orm"
 )
 
 type CategoryController struct {
@@ -50,6 +51,9 @@ func (nc *CategoryController) Detail() {
 	id := helper.StringToInt64(idStr)
 	model, err := news_category.FindById(id)
 	if err != nil {
+		if err == orm.ErrNoRows {
+			nc.SuccessJSON(new(struct{}))
+		}
 		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
 	}
 	category.Model = model
