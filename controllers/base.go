@@ -3,6 +3,7 @@ package controllers
 import (
 	"ara-news/boot"
 	"ara-news/components/response"
+	"ara-news/validators"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
@@ -83,14 +84,15 @@ func (base *BaseController) SystemErrorJSON() {
 
 func (base *BaseController) Valid(obj interface{}) {
 	valid := boot.GetValidator()
-	if err := valid.Validate.Struct(obj); err != nil {
+	if err := valid.Struct(obj); err != nil {
 		errs := err.(validator.ValidationErrors)
-		errTrs := errs.Translate(valid.Trans)
-		var errstr []string
+		trans := validators.GetTrans(boot.GetLang())
+		errTrs := errs.Translate(trans)
+		var errStr []string
 		for _, v := range errTrs {
-			errstr = append(errstr, v)
+			errStr = append(errStr, v)
 		}
-		base.ErrorJSON(response.PARAMS_ERROR, strings.Join(errstr, "\r\n"))
+		base.ErrorJSON(response.PARAMS_ERROR, strings.Join(errStr, "\r\n"))
 	}
 }
 

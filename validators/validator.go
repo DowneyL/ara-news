@@ -6,28 +6,25 @@ import (
 	"github.com/go-playground/locales/zh"
 	"github.com/go-playground/universal-translator"
 	"gopkg.in/go-playground/validator.v9"
-	entrans "gopkg.in/go-playground/validator.v9/translations/en"
-	jatrans "gopkg.in/go-playground/validator.v9/translations/ja"
-	zhtrans "gopkg.in/go-playground/validator.v9/translations/zh"
+	enTranslation "gopkg.in/go-playground/validator.v9/translations/en"
+	jaTranslation "gopkg.in/go-playground/validator.v9/translations/ja"
+	zhTranslation "gopkg.in/go-playground/validator.v9/translations/zh"
 	"reflect"
 	"strings"
 )
 
 var (
-	uni       *ut.UniversalTranslator
-	Validator UniversalValidator
+	validate *validator.Validate
+	enTrans  ut.Translator
+	zhTrans  ut.Translator
+	jaTrans  ut.Translator
 )
 
-type UniversalValidator struct {
-	Validate *validator.Validate
-	Trans    ut.Translator
-}
-
-func InitValidate() UniversalValidator {
-	Validator.Validate = validator.New()
+func InitValidate() *validator.Validate {
+	validate = validator.New()
 
 	// 验证器字段根据标签 form 或者 json 的名字定
-	Validator.Validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
 		getFieldName := func(str string) string {
 			return strings.SplitN(fld.Tag.Get(str), ",", 2)[0]
 		}
@@ -41,45 +38,53 @@ func InitValidate() UniversalValidator {
 		return name
 	})
 
-	return Validator
+	initUniversalValidator()
+
+	return validate
 }
 
-func InitUniversalValidator(lang string) UniversalValidator {
+func GetTrans(lang string) ut.Translator {
 	switch lang {
 	case "en-US":
-		return registerEnTranslation()
+		return enTrans
 	case "zh-CN":
-		return registerZhTranslation()
+		return zhTrans
 	case "ja":
-		return registerJaTranslation()
+		return jaTrans
 	default:
-		return registerEnTranslation()
+		return enTrans
 	}
 }
 
-func registerEnTranslation() UniversalValidator {
+func initUniversalValidator() {
+	enTrans = getEnTrans()
+	zhTrans = getZhTrans()
+	jaTrans = getJaTrans()
+	_ = enTranslation.RegisterDefaultTranslations(validate, enTrans)
+	_ = zhTranslation.RegisterDefaultTranslations(validate, zhTrans)
+	_ = jaTranslation.RegisterDefaultTranslations(validate, jaTrans)
+}
+
+func getEnTrans() ut.Translator {
+	var uni *ut.UniversalTranslator
 	enTr := en.New()
 	uni = ut.New(enTr, enTr)
 	trans, _ := uni.GetTranslator("en")
-	Validator.Trans = trans
-	_ = entrans.RegisterDefaultTranslations(Validator.Validate, Validator.Trans)
-	return Validator
+	return trans
 }
 
-func registerZhTranslation() UniversalValidator {
+func getZhTrans() ut.Translator {
+	var uni *ut.UniversalTranslator
 	zhTr := zh.New()
 	uni = ut.New(zhTr, zhTr)
 	trans, _ := uni.GetTranslator("zh")
-	Validator.Trans = trans
-	_ = zhtrans.RegisterDefaultTranslations(Validator.Validate, Validator.Trans)
-	return Validator
+	return trans
 }
 
-func registerJaTranslation() UniversalValidator {
+func getJaTrans() ut.Translator {
+	var uni *ut.UniversalTranslator
 	jaTr := ja.New()
 	uni = ut.New(jaTr, jaTr)
 	trans, _ := uni.GetTranslator("ja")
-	Validator.Trans = trans
-	_ = jatrans.RegisterDefaultTranslations(Validator.Validate, Validator.Trans)
-	return Validator
+	return trans
 }

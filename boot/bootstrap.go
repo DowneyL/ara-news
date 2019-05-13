@@ -8,6 +8,7 @@ import (
 	"ara-news/validators"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 var App Application
@@ -16,7 +17,7 @@ type Application struct {
 	GeoIP      geoip.Geo
 	Locale     lang.Locale
 	RestLocale []lang.Locale
-	Validator  validators.UniversalValidator
+	Validate   *validator.Validate
 	Pagination pagination.Pagination
 }
 
@@ -34,8 +35,8 @@ func init() {
 	// 初始化数据库信息
 	mysql.InitMysql()
 
-	// 初始化基础验证器
-	App.Validator = validators.InitValidate()
+	// 初始国际化验证器
+	App.Validate = validators.InitValidate()
 
 	// 注册 maxmind 地址库
 	geoip.RegisterCityIpReader()
@@ -45,8 +46,8 @@ func GetGeoIP() geoip.Geo {
 	return App.GeoIP
 }
 
-func GetValidator() validators.UniversalValidator {
-	return App.Validator
+func GetValidator() *validator.Validate {
+	return App.Validate
 }
 
 func GetLocale() lang.Locale {
@@ -59,4 +60,8 @@ func GetRestLocale() []lang.Locale {
 
 func GetPagination() pagination.Pagination {
 	return App.Pagination
+}
+
+func GetLang() string {
+	return GetLocale().Lang
 }

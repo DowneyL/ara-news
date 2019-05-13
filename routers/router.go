@@ -14,7 +14,6 @@ import (
 	"ara-news/components/pagination"
 	"ara-news/controllers"
 	"ara-news/controllers/news"
-	"ara-news/validators"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )
@@ -25,8 +24,6 @@ func init() {
 		boot.App.Locale, boot.App.RestLocale = lang.InitLang(context)
 
 		boot.App.GeoIP = geoip.InitGeoIP(context)
-
-		boot.App.Validator = validators.InitUniversalValidator(boot.App.Locale.Lang)
 
 		boot.App.Pagination = pagination.InitPagination(context)
 	})
