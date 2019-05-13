@@ -74,6 +74,7 @@ func FindById(id int64) (News, error) {
 		return news, err
 	}
 	news.Content = content
+	news.Content.Lang = content.Lid.String()
 
 	fields = []string{"view_count"}
 	extend, err := news_info_extend.FindByNid(id, fields...)

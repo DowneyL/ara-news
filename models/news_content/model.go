@@ -9,11 +9,12 @@ import (
 )
 
 type Model struct {
-	Id      int64  `json:"id,omitempty"`
-	Nid     int64  `json:"nid,omitempty"`
-	Lang    int    `json:"lang,omitempty"`
-	Title   string `json:"title,omitempty"`
-	Content string `json:"content,omitempty"`
+	Id      int64    `json:"id,omitempty"`
+	Nid     int64    `json:"nid,omitempty"`
+	Lid     lang.Lid `json:"-"`
+	Lang    string   `json:"lang,omitempty"`
+	Title   string   `json:"title,omitempty"`
+	Content string   `json:"content,omitempty"`
 }
 
 func init() {
@@ -36,7 +37,7 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 func NewModel(nid int64, content newsValidator.Content) Model {
 	var model Model
 	model.Nid = nid
-	model.Lang = lang.GetLangId(content.Lang)
+	model.Lid = lang.GetLangId(content.Lang)
 	model.Title = template.HTMLEscapeString(content.Title)
 	model.Content = template.HTMLEscapeString(content.Content)
 

@@ -11,7 +11,7 @@ import (
 
 type Model struct {
 	Id             int64            `json:"id,omitempty"`
-	Cid            int64            `json:"cid,omitempty"`
+	Cid            int64            `json:"-"`
 	AttributeSetId helper.Platform  `json:"-"`
 	Seq            int              `json:"seq,omitempty"`
 	IsHidden       int              `json:"is_hidden,omitempty"`

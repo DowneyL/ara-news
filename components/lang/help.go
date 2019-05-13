@@ -1,20 +1,41 @@
 package lang
 
-import "strings"
+type Lid int
 
 const (
-	zh_CN int = iota + 1
-	en_US
+	zhCN Lid = iota + 1
+	enUS
+	ja
 )
 
-func GetLangId(lang string) int {
-	lang = strings.ToLower(lang)
+const (
+	zhCNCode string = "zh-CN"
+	enUSCode        = "en-US"
+	jaCode          = "ja"
+)
+
+func GetLangId(lang string) Lid {
 	switch lang {
-	case "zh_cn":
-		return zh_CN
-	case "en_US":
-		return en_US
+	case zhCNCode:
+		return zhCN
+	case enUSCode:
+		return enUS
+	case jaCode:
+		return ja
 	default:
-		return en_US
+		return enUS
+	}
+}
+
+func (l *Lid) String() string {
+	switch *l {
+	case zhCN:
+		return zhCNCode
+	case enUS:
+		return enUSCode
+	case ja:
+		return jaCode
+	default:
+		return enUSCode
 	}
 }
