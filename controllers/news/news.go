@@ -35,7 +35,7 @@ func (c *Controller) Create() {
 
 func (c *Controller) Detail() {
 	id := helper.StringToInt64(c.Ctx.Input.Param(":id"))
-	news, err := newsService.FindById(id)
+	newsDetail, err := newsService.FindById(id)
 	if err != nil {
 		if err == orm.ErrNoRows {
 			c.SuccessJSON(new(struct{}))
@@ -43,5 +43,5 @@ func (c *Controller) Detail() {
 		c.ErrorJSON(response.QUERY_ERROR, err.Error())
 	}
 
-	c.SuccessJSON(news)
+	c.SuccessJSON(newsDetail)
 }

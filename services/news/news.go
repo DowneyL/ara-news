@@ -9,7 +9,7 @@ import (
 	newsValidator "ara-news/validators/news"
 )
 
-type News struct {
+type Detail struct {
 	news_info.Model
 	Platform      string                 `json:"platform"`
 	PublishedDate string                 `json:"published_date"`
@@ -19,8 +19,6 @@ type News struct {
 	Content       news_content.Model     `json:"content"`
 	Extend        news_info_extend.Model `json:"extend"`
 }
-
-var news News
 
 func CreateNews(news newsValidator.News) (int64, error) {
 	o := mysql.GetOrmer("master")
@@ -56,39 +54,16 @@ func CreateNews(news newsValidator.News) (int64, error) {
 	return nid, nil
 }
 
-func FindById(id int64) (News, error) {
+func FindById(id int64) (Detail, error) {
+	var detail Detail
 	// TODO:起协程查询
-	info, err := news_info.FindById(id)
+	err := detail.FindInfoById(id)
 	if err != nil {
-		return news, err
+		return detail, err
 	}
-	news.Model = info
-	news.Platform = info.AttributeSetId.String()
-	news.CreatedDate = info.CreatedAt.String()
-	news.UpdatedDate = info.UpdatedAt.String()
-	news.PublishedDate = info.PublishedAt.String()
+	_ = detail.FindContentByNid(id)
+	_ = detail.FindExtendByNid(id)
+	_ = detail.FindCategoryByCid(detail.Cid)
 
-	fields := []string{"id", "lang", "title", "content"}
-	content, err := news_content.FindByNId(id, fields...)
-	if err != nil {
-		return news, err
-	}
-	news.Content = content
-	news.Content.Lang = content.Lid.String()
-
-	fields = []string{"view_count"}
-	extend, err := news_info_extend.FindByNid(id, fields...)
-	if err != nil {
-		return news, err
-	}
-	news.Extend = extend
-
-	fields = []string{"id", "code", "icon", "name_zh", "name_en"}
-	category, err := news_category.FindById(info.Cid, fields...)
-	if err != nil {
-		return news, err
-	}
-	news.Category = category
-
-	return news, nil
+	return detail, nil
 }
