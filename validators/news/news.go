@@ -22,6 +22,7 @@ type Content struct {
 }
 
 type Query struct {
-	Author  string `json:"author"`
-	OrderBy string `json:"order_by"`
+	Ids     []int64 `json:"ids"`
+	Author  string  `json:"author"`
+	OrderBy string  `json:"order_by"`
 }

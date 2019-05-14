@@ -92,9 +92,18 @@ func TransactionInsert(o orm.Ormer, info newsValidator.Info) (int64, error) {
 	return nid, nil
 }
 
-func FindLimit(query newsValidator.Query) ([]*Model, error) {
-	var models []*Model
+func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
+	var (
+		models []*Model
+		err    error
+	)
 	qs := InitQuerySetter()
+
+	if len(query.Ids) > 0 {
+		_, err = qs.Filter("id__in", query.Ids).All(&models)
+		return models, err
+	}
+
 	if query.Author != "" {
 		qs = qs.Filter("author", query.Author)
 	}
@@ -108,7 +117,7 @@ func FindLimit(query newsValidator.Query) ([]*Model, error) {
 		qs = qs.OrderBy("-published_at")
 	}
 	pagination := boot.GetPagination()
-	_, err := qs.Limit(pagination.Size, pagination.Limit).All(&models)
+	_, err = qs.Limit(pagination.Size, pagination.Limit).All(&models, cols...)
 
 	return models, err
 }

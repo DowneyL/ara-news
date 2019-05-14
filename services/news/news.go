@@ -22,6 +22,15 @@ type Detail struct {
 	Extend        news_info_extend.Model `json:"extend"`
 }
 
+func (list *List) GetNIds() []int64 {
+	var ids []int64
+	for _, detail := range *list {
+		ids = append(ids, detail.Id)
+	}
+
+	return ids
+}
+
 func Create(news newsValidator.News) (int64, error) {
 	o := mysql.GetOrmer("master")
 	err := o.Begin()
@@ -59,6 +68,11 @@ func FindById(id int64) (Detail, error) {
 func FindLimit(query newsValidator.Query) ([]*Detail, error) {
 	var list List
 	err := list.FindInfoLimit(query)
+	if err != nil {
+		return list, err
+	}
+
+	err = list.SetLimitContent()
 	if err != nil {
 		return list, err
 	}

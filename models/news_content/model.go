@@ -1,8 +1,10 @@
 package news_content
 
 import (
+	"ara-news/boot"
 	"ara-news/components/lang"
 	"ara-news/components/mysql"
+	"ara-news/helper"
 	newsValidator "ara-news/validators/news"
 	"github.com/astaxie/beego/orm"
 	"html/template"
@@ -10,7 +12,7 @@ import (
 
 type Model struct {
 	Id      int64    `json:"id,omitempty"`
-	Nid     int64    `json:"nid,omitempty"`
+	Nid     int64    `json:"-"`
 	Lid     lang.Lid `json:"-" orm:"column(lang)"`
 	LangStr string   `json:"lang,omitempty" orm:"-"`
 	Title   string   `json:"title,omitempty"`
@@ -61,4 +63,29 @@ func TransactionInsert(o orm.Ormer, nid int64, content newsValidator.Content) er
 	}
 
 	return nil
+}
+
+func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
+	var (
+		models []*Model
+		err    error
+	)
+	qs := InitQuerySetter()
+
+	if len(query.Ids) > 0 {
+		_, err = qs.Filter("nid__in", query.Ids).All(&models, cols...)
+		return models, err
+	}
+
+	if query.OrderBy != "" {
+		orders, err := helper.GetOrmOrders(query.OrderBy)
+		if err != nil {
+			return models, nil
+		}
+		qs.OrderBy(orders...)
+	}
+	pagination := boot.GetPagination()
+	_, err = qs.Limit(pagination.Size, pagination.Limit).All(&models, cols...)
+
+	return models, err
 }
