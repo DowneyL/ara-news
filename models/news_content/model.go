@@ -11,8 +11,8 @@ import (
 type Model struct {
 	Id      int64    `json:"id,omitempty"`
 	Nid     int64    `json:"nid,omitempty"`
-	Lid     lang.Lid `json:"-"`
-	Lang    string   `json:"lang,omitempty"`
+	Lid     lang.Lid `json:"-" orm:"column(lang)"`
+	LangStr string   `json:"lang,omitempty" orm:"-"`
 	Title   string   `json:"title,omitempty"`
 	Content string   `json:"content,omitempty"`
 }
@@ -50,4 +50,15 @@ func FindByNId(nid int64, cols ...string) (Model, error) {
 	err := qs.Filter("nid", nid).One(&model, cols...)
 
 	return model, err
+}
+
+func TransactionInsert(o orm.Ormer, nid int64, content newsValidator.Content) error {
+	model := NewModel(nid, content)
+	_, err := o.Insert(&model)
+	if err != nil {
+		_ = o.Rollback()
+		return err
+	}
+
+	return nil
 }

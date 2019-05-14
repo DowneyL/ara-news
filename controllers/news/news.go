@@ -25,7 +25,7 @@ func (c *Controller) BeforeAction() {
 func (c *Controller) Create() {
 	var data newsValidator.News
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &data)
-	id, err := newsService.CreateNews(data)
+	id, err := newsService.Create(data)
 	if err != nil {
 		c.ErrorJSON(response.QUERY_ERROR, err.Error())
 	}

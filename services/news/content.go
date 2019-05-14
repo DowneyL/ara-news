@@ -9,7 +9,7 @@ func (d *Detail) FindContentByNid(nid int64) error {
 		return err
 	}
 	d.Content = content
-	d.Content.Lang = content.Lid.String()
+	d.Content.LangStr = content.Lid.String()
 
 	return nil
 }

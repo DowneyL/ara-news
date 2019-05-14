@@ -20,33 +20,19 @@ type Detail struct {
 	Extend        news_info_extend.Model `json:"extend"`
 }
 
-func CreateNews(news newsValidator.News) (int64, error) {
+func Create(news newsValidator.News) (int64, error) {
 	o := mysql.GetOrmer("master")
 	err := o.Begin()
-	info := news.Info
-	infoModel, err := news_info.NewModel(info)
+	nid, err := news_info.TransactionInsert(o, news.Info)
 	if err != nil {
 		return 0, err
 	}
-	nid, err := o.Insert(&infoModel)
+	err = news_content.TransactionInsert(o, nid, news.Content)
 	if err != nil {
-		_ = o.Rollback()
 		return 0, err
 	}
-
-	//TODO:起协程插入
-	content := news.Content
-	contentModel := news_content.NewModel(nid, content)
-	_, err = o.Insert(&contentModel)
+	err = news_info_extend.TransactionInsert(o, nid)
 	if err != nil {
-		_ = o.Rollback()
-		return 0, err
-	}
-
-	extendModel := news_info_extend.NewModel(nid)
-	_, err = o.Insert(&extendModel)
-	if err != nil {
-		_ = o.Rollback()
 		return 0, err
 	}
 	_ = o.Commit()

@@ -76,3 +76,17 @@ func FindById(id int64, cols ...string) (Model, error) {
 
 	return model, err
 }
+
+func TransactionInsert(o orm.Ormer, info newsValidator.Info) (int64, error) {
+	model, err := NewModel(info)
+	if err != nil {
+		return 0, err
+	}
+	nid, err := o.Insert(&model)
+	if err != nil {
+		_ = o.Rollback()
+		return 0, err
+	}
+
+	return nid, nil
+}

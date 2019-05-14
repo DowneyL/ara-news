@@ -42,3 +42,14 @@ func FindByNid(nid int64, cols ...string) (Model, error) {
 
 	return model, err
 }
+
+func TransactionInsert(o orm.Ormer, nid int64) error {
+	model := NewModel(nid)
+	_, err := o.Insert(&model)
+	if err != nil {
+		_ = o.Rollback()
+		return err
+	}
+
+	return nil
+}
