@@ -20,3 +20,8 @@ type Content struct {
 	Title   string `json:"title" validate:"required,max=150"`
 	Content string `json:"content" validate:"required"`
 }
+
+type Query struct {
+	Author  string `json:"author"`
+	OrderBy string `json:"order_by"`
+}

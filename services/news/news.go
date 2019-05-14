@@ -9,6 +9,8 @@ import (
 	newsValidator "ara-news/validators/news"
 )
 
+type List []*Detail
+
 type Detail struct {
 	news_info.Model
 	Platform      string                 `json:"platform"`
@@ -52,4 +54,14 @@ func FindById(id int64) (Detail, error) {
 	_ = detail.FindCategoryByCid(detail.Cid)
 
 	return detail, nil
+}
+
+func FindLimit(query newsValidator.Query) ([]*Detail, error) {
+	var list List
+	err := list.FindInfoLimit(query)
+	if err != nil {
+		return list, err
+	}
+
+	return list, nil
 }

@@ -19,6 +19,8 @@ func (c *Controller) BeforeAction() {
 	switch action {
 	case "Create":
 		c.ValidJSON(&newsValidator.News{})
+	case "List":
+		c.ValidForm(&newsValidator.Query{})
 	}
 }
 
@@ -44,4 +46,15 @@ func (c *Controller) Detail() {
 	}
 
 	c.SuccessJSON(newsDetail)
+}
+
+func (c *Controller) List() {
+	var query newsValidator.Query
+	_ = c.ParseForm(&query)
+	details, err := newsService.FindLimit(query)
+	if err != nil {
+		c.ErrorJSON(response.QUERY_ERROR, err.Error())
+	}
+
+	c.SuccessJSON(details)
 }

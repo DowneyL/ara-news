@@ -1,6 +1,7 @@
 package news_info
 
 import (
+	"ara-news/boot"
 	"ara-news/components/mysql"
 	"ara-news/helper"
 	"ara-news/models/news_category"
@@ -89,4 +90,25 @@ func TransactionInsert(o orm.Ormer, info newsValidator.Info) (int64, error) {
 	}
 
 	return nid, nil
+}
+
+func FindLimit(query newsValidator.Query) ([]*Model, error) {
+	var models []*Model
+	qs := InitQuerySetter()
+	if query.Author != "" {
+		qs = qs.Filter("author", query.Author)
+	}
+	if query.OrderBy != "" {
+		orders, err := helper.GetOrmOrders(query.OrderBy)
+		if err != nil {
+			return models, err
+		}
+		qs = qs.OrderBy(orders...)
+	} else {
+		qs = qs.OrderBy("-published_at")
+	}
+	pagination := boot.GetPagination()
+	_, err := qs.Limit(pagination.Size, pagination.Limit).All(&models)
+
+	return models, err
 }
