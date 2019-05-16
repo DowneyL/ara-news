@@ -54,14 +54,7 @@ func (c *Controller) Detail() {
 }
 
 func (c *Controller) List() {
-	var query newsValidator.Query
-	_ = c.ParseForm(&query)
-	details, err := newsService.FindLimit(query)
-	if err != nil {
-		c.QueryErrorJSON(err.Error())
-	}
 
-	c.SuccessJSON(details)
 }
 
 func (c *Controller) CreateContent() {

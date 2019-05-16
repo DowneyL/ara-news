@@ -8,6 +8,13 @@ import (
 	newsValidator "ara-news/validators/news"
 )
 
+type Detail struct {
+	Info     Info     `json:"info"`
+	Category Category `json:"category"`
+	Contents Contents `json:"contents"`
+	Extend   Extend   `json:"extend"`
+}
+
 func Create(news newsValidator.News) (int64, error) {
 	o := mysql.GetOrmer("master")
 	err := o.Begin()
@@ -31,28 +38,13 @@ func Create(news newsValidator.News) (int64, error) {
 func FindById(id int64) (Detail, error) {
 	var detail Detail
 	// TODO:起协程查询
-	err := detail.FindInfoById(id)
+	err := detail.Info.FindById(id)
 	if err != nil {
 		return detail, err
 	}
-	_ = detail.FindContentByNid(id)
-	_ = detail.FindExtendByNid(id)
-	_ = detail.FindCategoryByCid(detail.Cid)
+	_ = detail.Contents.FindAllByNid(id)
+	_ = detail.Extend.FindByNid(id)
+	_ = detail.Category.FindById(detail.Info.Cid)
 
 	return detail, nil
-}
-
-func FindLimit(query newsValidator.Query) ([]*Detail, error) {
-	var list List
-	err := list.FindInfoLimit(query)
-	if err != nil {
-		return list, err
-	}
-
-	err = list.SetLimitContent()
-	if err != nil {
-		return list, err
-	}
-
-	return list, nil
 }
