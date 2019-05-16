@@ -36,6 +36,7 @@ func init() {
 		beego.NSNamespace("/news",
 			beego.NSRouter("/", &news.Controller{}, "get:List;post:Create"),
 			beego.NSRouter("/:id([0-9]+)", &news.Controller{}, "get:Detail"),
+			beego.NSRouter("/:id([0-9]+)/content", &news.Controller{}, "post:CreateContent"),
 			beego.NSNamespace("/category",
 				beego.NSRouter("/", &news.CategoryController{}, "get:List;post:Create;delete:BatchDelete"),
 				beego.NSRouter("/:id([0-9]+)", &news.CategoryController{}, "get:Detail;delete:Delete;put:Update"),

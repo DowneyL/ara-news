@@ -89,3 +89,10 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 
 	return models, err
 }
+
+func Insert(nid int64, content newsValidator.Content) (int64, error) {
+	o := mysql.GetOrmer("master")
+	model := NewModel(nid, content)
+
+	return o.Insert(&model)
+}

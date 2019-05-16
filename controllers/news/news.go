@@ -4,6 +4,8 @@ import (
 	"ara-news/components/response"
 	"ara-news/controllers"
 	"ara-news/helper"
+	"ara-news/models/news_content"
+	"ara-news/models/news_info"
 	newsService "ara-news/services/news"
 	newsValidator "ara-news/validators/news"
 	"encoding/json"
@@ -21,6 +23,8 @@ func (c *Controller) BeforeAction() {
 		c.ValidJSON(&newsValidator.News{})
 	case "List":
 		c.ValidForm(&newsValidator.Query{})
+	case "CreateContent":
+		c.ValidJSON(&newsValidator.Content{})
 	}
 }
 
@@ -57,4 +61,20 @@ func (c *Controller) List() {
 	}
 
 	c.SuccessJSON(details)
+}
+
+func (c *Controller) CreateContent() {
+	var content newsValidator.Content
+	nid := helper.StringToInt64(c.Ctx.Input.Param(":id"))
+	exist := news_info.Exist(nid)
+	if !exist {
+		c.InvalidArgumentJSON()
+	}
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &content)
+	contentId, err := news_content.Insert(nid, content)
+	if err != nil {
+		c.ErrorJSON(response.QUERY_ERROR, err.Error())
+	}
+
+	c.SuccessJSON(helper.NewInsertId(contentId))
 }

@@ -70,10 +70,16 @@ func NewModel(info newsValidator.Info) (Model, error) {
 	return model, nil
 }
 
+func Exist(id int64) bool {
+	qs := InitQuerySetter()
+
+	return qs.Filter("id", id).Exist()
+}
+
 func FindById(id int64, cols ...string) (Model, error) {
 	var model Model
 	qs := InitQuerySetter()
-	err := qs.Filter("id", id).One(&model, cols...)
+	err := qs.Filter("id", id).Filter("is_hidden", 0).One(&model, cols...)
 
 	return model, err
 }
