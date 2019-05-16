@@ -8,7 +8,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
 	"gopkg.in/go-playground/validator.v9"
-	"strings"
 )
 
 type BaseController struct {
@@ -72,13 +71,21 @@ func (base *BaseController) ErrorJSON(code response.ErrorCode, message string, t
 	base.returnJson()
 }
 
-func (base *BaseController) InvalidArgumentJSON() {
-	base.Data["json"] = base.InvalidArgument()
+func (base *BaseController) InvalidArgumentJSON(errors ...string) {
+	base.Data["json"] = base.InvalidArgument(errors...)
 	base.returnJson()
 }
 
-func (base *BaseController) SystemErrorJSON() {
-	base.Data["json"] = base.SystemError()
+func (base *BaseController) SystemErrorJSON(errors ...string) {
+	base.Data["json"] = base.SystemError(errors...)
+	base.returnJson()
+}
+
+func (base *BaseController) QueryErrorJSON(errors ...string) {
+	if beego.BConfig.RunMode != beego.DEV {
+		errors = []string{}
+	}
+	base.Data["json"] = base.QueryError(errors...)
 	base.returnJson()
 }
 
@@ -88,11 +95,11 @@ func (base *BaseController) Valid(obj interface{}) {
 		errs := err.(validator.ValidationErrors)
 		trans := validators.GetTrans(boot.GetLang())
 		errTrs := errs.Translate(trans)
-		var errStr []string
+		var errors []string
 		for _, v := range errTrs {
-			errStr = append(errStr, v)
+			errors = append(errors, v)
 		}
-		base.ErrorJSON(response.PARAMS_ERROR, strings.Join(errStr, "\r\n"))
+		base.InvalidArgumentJSON(errors...)
 	}
 }
 
@@ -106,7 +113,7 @@ func (base *BaseController) ValidForm(obj interface{}) {
 func (base *BaseController) ValidJSON(obj interface{}) {
 	if err := json.Unmarshal(base.Ctx.Input.RequestBody, obj); err != nil {
 		if beego.BConfig.RunMode == beego.DEV {
-			base.ErrorJSON(response.PARAMS_ERROR, err.Error())
+			base.InvalidArgumentJSON(err.Error())
 		}
 
 		base.InvalidArgumentJSON()

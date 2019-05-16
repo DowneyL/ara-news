@@ -1,7 +1,6 @@
 package news
 
 import (
-	"ara-news/components/response"
 	"ara-news/controllers"
 	"ara-news/helper"
 	"ara-news/models/news_content"
@@ -33,7 +32,7 @@ func (c *Controller) Create() {
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &data)
 	id, err := newsService.Create(data)
 	if err != nil {
-		c.ErrorJSON(response.QUERY_ERROR, err.Error())
+		c.QueryErrorJSON(err.Error())
 	}
 
 	c.SuccessJSON(helper.NewInsertId(id))
@@ -46,7 +45,7 @@ func (c *Controller) Detail() {
 		if err == orm.ErrNoRows {
 			c.SuccessJSON(new(struct{}))
 		}
-		c.ErrorJSON(response.QUERY_ERROR, err.Error())
+		c.QueryErrorJSON(err.Error())
 	}
 
 	c.SuccessJSON(newsDetail)
@@ -57,7 +56,7 @@ func (c *Controller) List() {
 	_ = c.ParseForm(&query)
 	details, err := newsService.FindLimit(query)
 	if err != nil {
-		c.ErrorJSON(response.QUERY_ERROR, err.Error())
+		c.QueryErrorJSON(err.Error())
 	}
 
 	c.SuccessJSON(details)
@@ -73,7 +72,7 @@ func (c *Controller) CreateContent() {
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &content)
 	contentId, err := news_content.Insert(nid, content)
 	if err != nil {
-		c.ErrorJSON(response.QUERY_ERROR, err.Error())
+		c.QueryErrorJSON(err.Error())
 	}
 
 	c.SuccessJSON(helper.NewInsertId(contentId))

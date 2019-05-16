@@ -10,8 +10,8 @@ type Errors struct {
 type Status struct {
 	Code    ErrorCode `json:"code"`
 	Message string    `json:"message"`
+	Errors  []string  `json:"errors,omitempty"`
 	Time    string    `json:"time"`
-	State   string    `json:"state"`
 }
 
 type Response struct {

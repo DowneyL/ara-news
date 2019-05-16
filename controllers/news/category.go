@@ -1,7 +1,6 @@
 package news
 
 import (
-	"ara-news/components/response"
 	"ara-news/controllers"
 	"ara-news/helper"
 	"ara-news/models/news_category"
@@ -36,7 +35,7 @@ func (nc *CategoryController) List() {
 	_ = nc.ParseForm(&query)
 	categories, err := news_category.FindLimit(query)
 	if err != nil {
-		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
+		nc.QueryErrorJSON(err.Error())
 	}
 	if categories == nil {
 		nc.SuccessJSON(new(struct{}))
@@ -54,7 +53,7 @@ func (nc *CategoryController) Detail() {
 		if err == orm.ErrNoRows {
 			nc.SuccessJSON(new(struct{}))
 		}
-		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
+		nc.QueryErrorJSON(err.Error())
 	}
 	category.Model = model
 	category.CreatedDate = model.CreatedAt.String()
@@ -68,7 +67,7 @@ func (nc *CategoryController) Create() {
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
 	num, err := news_category.Insert(data)
 	if err != nil {
-		nc.ErrorJSON(response.QUERY_ERROR, err.Error())
+		nc.QueryErrorJSON(err.Error())
 	}
 
 	nc.SuccessJSON(helper.NewInsertId(num))
@@ -79,9 +78,9 @@ func (nc *CategoryController) Update() {
 	idStr := nc.Ctx.Input.Param(":id")
 	id := helper.StringToInt64(idStr)
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
-	num, e := news_category.UpdateById(id, data)
-	if e != nil {
-		nc.ErrorJSON(response.QUERY_ERROR, e.Error())
+	num, err := news_category.UpdateById(id, data)
+	if err != nil {
+		nc.QueryErrorJSON(err.Error())
 	}
 
 	nc.SuccessJSON(helper.NewAffectNum(num))
@@ -92,9 +91,9 @@ func (nc *CategoryController) UpdateNameEn() {
 	idStr := nc.Ctx.Input.Param(":id")
 	id := helper.StringToInt64(idStr)
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &data)
-	num, e := news_category.UpdateNameEnById(id, data)
-	if e != nil {
-		nc.ErrorJSON(response.QUERY_ERROR, e.Error())
+	num, err := news_category.UpdateNameEnById(id, data)
+	if err != nil {
+		nc.QueryErrorJSON(err.Error())
 	}
 
 	nc.SuccessJSON(helper.NewAffectNum(num))
@@ -105,7 +104,7 @@ func (nc *CategoryController) Delete() {
 	id := helper.StringToInt64(idStr)
 	num, err := news_category.DeleteById(id)
 	if err != nil {
-		nc.SystemErrorJSON()
+		nc.SystemErrorJSON(err.Error())
 	}
 
 	nc.SuccessJSON(helper.NewAffectNum(num))
@@ -116,7 +115,7 @@ func (nc *CategoryController) BatchDelete() {
 	_ = json.Unmarshal(nc.Ctx.Input.RequestBody, &cIds)
 	num, err := news_category.DeleteByIds(cIds)
 	if err != nil {
-		nc.SystemErrorJSON()
+		nc.SystemErrorJSON(err.Error())
 	}
 
 	nc.SuccessJSON(helper.NewAffectNum(num))
