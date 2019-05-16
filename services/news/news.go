@@ -9,7 +9,7 @@ import (
 )
 
 type Detail struct {
-	Info     Info     `json:"info"`
+	Info
 	Category Category `json:"category"`
 	Contents Contents `json:"contents"`
 	Extend   Extend   `json:"extend"`

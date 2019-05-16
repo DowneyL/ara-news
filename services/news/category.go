@@ -6,7 +6,7 @@ import (
 	newsValidator "ara-news/validators/news"
 )
 
-type CategoryList []*Category
+type Categories []*Category
 
 type Category struct {
 	news_category.Model
@@ -42,7 +42,7 @@ func (c *Category) FindById(id int64, parseDate ...bool) error {
 	return nil
 }
 
-func (list *CategoryList) FindLimit(query newsValidator.QueryCategory) error {
+func (list *Categories) FindLimit(query newsValidator.QueryCategory) error {
 	models, err := news_category.FindLimit(query)
 	if err != nil {
 		return err
