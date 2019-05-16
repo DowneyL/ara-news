@@ -18,7 +18,7 @@ type Detail struct {
 	CreatedDate   string                 `json:"created_date"`
 	UpdatedDate   string                 `json:"updated_date"`
 	Category      news_category.Model    `json:"category"`
-	Content       news_content.Model     `json:"content"`
+	Contents      []*news_content.Model  `json:"content"`
 	Extend        news_info_extend.Model `json:"extend"`
 }
 

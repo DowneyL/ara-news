@@ -46,12 +46,12 @@ func NewModel(nid int64, content newsValidator.Content) Model {
 	return model
 }
 
-func FindByNId(nid int64, cols ...string) (Model, error) {
-	var model Model
+func FindByNId(nid int64, cols ...string) ([]*Model, error) {
+	var models []*Model
 	qs := InitQuerySetter()
-	err := qs.Filter("nid", nid).One(&model, cols...)
+	_, err := qs.Filter("nid", nid).All(&models, cols...)
 
-	return model, err
+	return models, err
 }
 
 func TransactionInsert(o orm.Ormer, nid int64, content newsValidator.Content) error {

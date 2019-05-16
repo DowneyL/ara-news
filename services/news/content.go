@@ -6,18 +6,20 @@ import (
 	"errors"
 )
 
-func (d *Detail) parseContentField(content news_content.Model) {
-	d.Content.LangStr = content.Lid.String()
+func (d *Detail) parseContentField(contents []*news_content.Model) {
+	for k, content := range contents {
+		d.Contents[k].LangStr = content.Lid.String()
+	}
 }
 
 func (d *Detail) FindContentByNid(nid int64) error {
 	fields := []string{"id", "lang", "title", "content"}
-	content, err := news_content.FindByNId(nid, fields...)
+	contents, err := news_content.FindByNId(nid, fields...)
 	if err != nil {
 		return err
 	}
-	d.Content = content
-	d.parseContentField(content)
+	d.Contents = contents
+	d.parseContentField(contents)
 
 	return nil
 }
@@ -29,18 +31,18 @@ func (list *List) SetLimitContent() error {
 		return errors.New("empty news ids")
 	}
 	query.Ids = list.GetNIds()
-	models, err := news_content.FindLimit(query)
-	if err != nil {
-		return err
-	}
-	modelMap := make(map[int64]*news_content.Model, len(models))
-	for _, model := range models {
-		modelMap[model.Nid] = model
-	}
-	for _, detail := range *list {
-		detail.Content = *modelMap[detail.Id]
-		detail.parseContentField(*modelMap[detail.Id])
-	}
+	//models, err := news_content.FindLimit(query)
+	//if err != nil {
+	//	return err
+	//}
+	//modelMap := make(map[int64]*news_content.Model, len(models))
+	//for _, model := range models {
+	//	modelMap[model.Nid] = model
+	//}
+	//for _, detail := range *list {
+	//	detail.Contents = *modelMap[detail.Id]
+	//	detail.parseContentField(*modelMap[detail.Id])
+	//}
 
 	return nil
 }
