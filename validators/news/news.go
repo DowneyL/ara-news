@@ -19,6 +19,7 @@ type Content struct {
 	Lang    string `json:"lang" validate:"required"`
 	Title   string `json:"title" validate:"required,max=150"`
 	Content string `json:"content" validate:"required"`
+	Default bool   `json:"default" validate:"-"`
 }
 
 type Query struct {

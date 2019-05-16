@@ -11,12 +11,13 @@ import (
 )
 
 type Model struct {
-	Id      int64    `json:"id,omitempty"`
-	Nid     int64    `json:"-"`
-	Lid     lang.Lid `json:"-" orm:"column(lang)"`
-	LangStr string   `json:"lang,omitempty" orm:"-"`
-	Title   string   `json:"title,omitempty"`
-	Content string   `json:"content,omitempty"`
+	Id        int64    `json:"id,omitempty"`
+	Nid       int64    `json:"-"`
+	IsDefault int      `json:"is_default"`
+	Lid       lang.Lid `json:"-" orm:"column(lang)"`
+	LangStr   string   `json:"lang,omitempty" orm:"-"`
+	Title     string   `json:"title,omitempty"`
+	Content   string   `json:"content,omitempty"`
 }
 
 func init() {
@@ -42,6 +43,9 @@ func NewModel(nid int64, content newsValidator.Content) Model {
 	model.Lid = lang.GetLangId(content.Lang)
 	model.Title = template.HTMLEscapeString(content.Title)
 	model.Content = template.HTMLEscapeString(content.Content)
+	if content.Default {
+		model.IsDefault = 1
+	}
 
 	return model
 }

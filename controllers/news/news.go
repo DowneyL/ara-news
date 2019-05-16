@@ -30,6 +30,8 @@ func (c *Controller) BeforeAction() {
 func (c *Controller) Create() {
 	var data newsValidator.News
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &data)
+	// 通过此接口创建的内容为默认多语言内容
+	data.Content.Default = true
 	id, err := newsService.Create(data)
 	if err != nil {
 		c.QueryErrorJSON(err.Error())

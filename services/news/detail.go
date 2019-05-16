@@ -54,7 +54,7 @@ func (d *Detail) FindExtendByNid(nid int64) error {
 }
 
 func (d *Detail) FindContentByNid(nid int64) error {
-	fields := []string{"id", "lang", "title", "content"}
+	fields := []string{"id", "lang", "title", "content", "is_default"}
 	contents, err := news_content.FindByNId(nid, fields...)
 	if err != nil {
 		return err
