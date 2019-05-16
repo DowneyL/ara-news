@@ -1,9 +1,9 @@
 package lang
 
-type Lid int
+type Types int
 
 const (
-	ZhCN Lid = iota + 1
+	ZhCN Types = iota + 1
 	EnUS
 	Ja
 )
@@ -14,7 +14,7 @@ const (
 	JaCode          = "ja"
 )
 
-func GetLangId(lang string) Lid {
+func GetLangId(lang string) Types {
 	switch lang {
 	case ZhCNCode:
 		return ZhCN
@@ -27,7 +27,7 @@ func GetLangId(lang string) Lid {
 	}
 }
 
-func (l *Lid) String() string {
+func (l *Types) String() string {
 	switch *l {
 	case ZhCN:
 		return ZhCNCode

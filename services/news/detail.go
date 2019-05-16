@@ -1,7 +1,6 @@
 package news
 
 import (
-	"ara-news/models/news_content"
 	"ara-news/models/news_info"
 	"ara-news/models/news_info_extend"
 )
@@ -13,7 +12,7 @@ type Detail struct {
 	CreatedDate   string                 `json:"created_date"`
 	UpdatedDate   string                 `json:"updated_date"`
 	Category      Category               `json:"category"`
-	Contents      []*news_content.Model  `json:"content"`
+	Contents      Contents               `json:"contents"`
 	Extend        news_info_extend.Model `json:"extend"`
 }
 
@@ -23,13 +22,6 @@ func (d *Detail) parseInfoField(info news_info.Model) {
 	d.CreatedDate = info.CreatedAt.String()
 	d.UpdatedDate = info.UpdatedAt.String()
 	d.PublishedDate = info.PublishedAt.String()
-}
-
-func (d *Detail) parseContentField(contents []*news_content.Model) {
-	d.Contents = contents
-	for k, content := range contents {
-		d.Contents[k].LangStr = content.Lid.String()
-	}
 }
 
 func (d *Detail) FindInfoById(id int64) error {
@@ -54,12 +46,15 @@ func (d *Detail) FindExtendByNid(nid int64) error {
 }
 
 func (d *Detail) FindContentByNid(nid int64) error {
-	fields := []string{"id", "lang", "title", "content", "is_default"}
-	contents, err := news_content.FindByNId(nid, fields...)
+	var contents Contents
+	err := contents.FindAllByNid(nid)
+	d.Contents = make(Contents, 0)
 	if err != nil {
 		return err
 	}
-	d.parseContentField(contents)
+	if contents != nil {
+		d.Contents = contents
+	}
 
 	return nil
 }

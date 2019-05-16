@@ -11,13 +11,12 @@ import (
 )
 
 type Model struct {
-	Id        int64    `json:"id,omitempty"`
-	Nid       int64    `json:"-"`
-	IsDefault int      `json:"is_default"`
-	Lid       lang.Lid `json:"-" orm:"column(lang)"`
-	LangStr   string   `json:"lang,omitempty" orm:"-"`
-	Title     string   `json:"title,omitempty"`
-	Content   string   `json:"content,omitempty"`
+	Id        int64      `json:"id,omitempty"`
+	Nid       int64      `json:"-"`
+	IsDefault int        `json:"is_default"`
+	LangType  lang.Types `json:"-"`
+	Title     string     `json:"title,omitempty"`
+	Content   string     `json:"content,omitempty"`
 }
 
 func init() {
@@ -40,7 +39,7 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 func NewModel(nid int64, content newsValidator.Content) Model {
 	var model Model
 	model.Nid = nid
-	model.Lid = lang.GetLangId(content.Lang)
+	model.LangType = lang.GetLangId(content.Lang)
 	model.Title = template.HTMLEscapeString(content.Title)
 	model.Content = template.HTMLEscapeString(content.Content)
 	if content.Default {
@@ -50,7 +49,7 @@ func NewModel(nid int64, content newsValidator.Content) Model {
 	return model
 }
 
-func FindByNId(nid int64, cols ...string) ([]*Model, error) {
+func FindAllByNId(nid int64, cols ...string) ([]*Model, error) {
 	var models []*Model
 	qs := InitQuerySetter()
 	_, err := qs.Filter("nid", nid).All(&models, cols...)
@@ -77,7 +76,7 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 	qs := InitQuerySetter()
 
 	if len(query.Ids) > 0 {
-		_, err = qs.Filter("nid__in", query.Ids).All(&models, cols...)
+		_, err = qs.Filter("nid__in", query.Ids).Filter("is_default", 1).All(&models, cols...)
 		return models, err
 	}
 

@@ -10,7 +10,7 @@ type CategoryList []*Category
 
 type Category struct {
 	news_category.Model
-	Name        map[string]string `json:"name"`
+	Name        map[string]string `json:"name,omitempty"`
 	CreatedDate string            `json:"created_date,omitempty"`
 	UpdatedDate string            `json:"updated_date,omitempty"`
 }
