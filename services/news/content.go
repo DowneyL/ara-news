@@ -9,7 +9,7 @@ type Content struct {
 	Lang string `json:"lang"`
 }
 
-func (c *Content) parseContentField(model news_content.Model) {
+func (c *Content) parseField(model news_content.Model) {
 	c.Model = model
 	c.Lang = model.LangType.String()
 }
@@ -23,7 +23,7 @@ func (cs *Contents) FindAllByNid(nid int64) error {
 
 	for _, model := range models {
 		var c Content
-		c.parseContentField(*model)
+		c.parseField(*model)
 		*cs = append(*cs, &c)
 	}
 

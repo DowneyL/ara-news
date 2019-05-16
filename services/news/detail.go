@@ -61,7 +61,7 @@ func (d *Detail) FindContentByNid(nid int64) error {
 
 func (d *Detail) FindCategoryByCid(cid int64) error {
 	var category Category
-	err := category.FindCategoryById(cid)
+	err := category.FindById(cid)
 	if err != nil {
 		return err
 	}

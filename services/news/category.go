@@ -15,7 +15,7 @@ type Category struct {
 	UpdatedDate string            `json:"updated_date,omitempty"`
 }
 
-func (c *Category) parseCategoryField(model news_category.Model, parseDate ...bool) {
+func (c *Category) parseField(model news_category.Model, parseDate ...bool) {
 	c.Model = model
 	name := make(map[string]string)
 	if model.NameEn != "" {
@@ -32,24 +32,24 @@ func (c *Category) parseCategoryField(model news_category.Model, parseDate ...bo
 	}
 }
 
-func (c *Category) FindCategoryById(id int64, parseDate ...bool) error {
+func (c *Category) FindById(id int64, parseDate ...bool) error {
 	model, err := news_category.FindById(id)
 	if err != nil {
 		return err
 	}
-	c.parseCategoryField(model, parseDate...)
+	c.parseField(model, parseDate...)
 
 	return nil
 }
 
-func (list *CategoryList) FindLimitCategory(query newsValidator.QueryCategory) error {
+func (list *CategoryList) FindLimit(query newsValidator.QueryCategory) error {
 	models, err := news_category.FindLimit(query)
 	if err != nil {
 		return err
 	}
 	for _, model := range models {
 		var c Category
-		c.parseCategoryField(*model)
+		c.parseField(*model)
 		*list = append(*list, &c)
 	}
 

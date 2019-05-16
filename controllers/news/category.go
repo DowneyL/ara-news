@@ -36,7 +36,7 @@ func (nc *CategoryController) List() {
 		categories newsService.CategoryList
 	)
 	_ = nc.ParseForm(&query)
-	err := categories.FindLimitCategory(query)
+	err := categories.FindLimit(query)
 	if err != nil {
 		nc.QueryErrorJSON(err.Error())
 	}
@@ -51,7 +51,7 @@ func (nc *CategoryController) Detail() {
 	var category newsService.Category
 	idStr := nc.Ctx.Input.Param(":id")
 	id := helper.StringToInt64(idStr)
-	err := category.FindCategoryById(id, true)
+	err := category.FindById(id, true)
 	if err != nil {
 		if err == orm.ErrNoRows {
 			nc.SuccessJSON(new(struct{}))
