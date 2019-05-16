@@ -2,34 +2,11 @@ package news
 
 import (
 	"ara-news/components/mysql"
-	"ara-news/models/news_category"
 	"ara-news/models/news_content"
 	"ara-news/models/news_info"
 	"ara-news/models/news_info_extend"
 	newsValidator "ara-news/validators/news"
 )
-
-type List []*Detail
-
-type Detail struct {
-	news_info.Model
-	Platform      string                 `json:"platform"`
-	PublishedDate string                 `json:"published_date"`
-	CreatedDate   string                 `json:"created_date"`
-	UpdatedDate   string                 `json:"updated_date"`
-	Category      news_category.Model    `json:"category"`
-	Contents      []*news_content.Model  `json:"content"`
-	Extend        news_info_extend.Model `json:"extend"`
-}
-
-func (list *List) GetNIds() []int64 {
-	var ids []int64
-	for _, detail := range *list {
-		ids = append(ids, detail.Id)
-	}
-
-	return ids
-}
 
 func Create(news newsValidator.News) (int64, error) {
 	o := mysql.GetOrmer("master")

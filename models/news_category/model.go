@@ -13,8 +13,8 @@ type Model struct {
 	Code      string           `json:"code,omitempty"`
 	Seq       int              `json:"seq,omitempty"`
 	Icon      string           `json:"icon,omitempty"`
-	NameZh    string           `json:"name_zh,omitempty"`
-	NameEn    string           `json:"name_en,omitempty"`
+	NameZh    string           `json:"-"`
+	NameEn    string           `json:"-"`
 	CreatedAt helper.Timestamp `json:"-"`
 	UpdatedAt helper.Timestamp `json:"-"`
 }

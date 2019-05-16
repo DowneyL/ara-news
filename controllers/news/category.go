@@ -48,16 +48,13 @@ func (nc *CategoryController) Detail() {
 	var category newsService.Category
 	idStr := nc.Ctx.Input.Param(":id")
 	id := helper.StringToInt64(idStr)
-	model, err := news_category.FindById(id)
+	err := category.FindCategoryById(id, true)
 	if err != nil {
 		if err == orm.ErrNoRows {
 			nc.SuccessJSON(new(struct{}))
 		}
 		nc.QueryErrorJSON(err.Error())
 	}
-	category.Model = model
-	category.CreatedDate = model.CreatedAt.String()
-	category.UpdatedDate = model.UpdatedAt.String()
 
 	nc.SuccessJSON(category)
 }

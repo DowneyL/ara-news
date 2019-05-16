@@ -3,39 +3,39 @@ package lang
 type Lid int
 
 const (
-	zhCN Lid = iota + 1
-	enUS
-	ja
+	ZhCN Lid = iota + 1
+	EnUS
+	Ja
 )
 
 const (
-	zhCNCode string = "zh-CN"
-	enUSCode        = "en-US"
-	jaCode          = "ja"
+	ZhCNCode string = "zh-CN"
+	EnUSCode        = "en-US"
+	JaCode          = "ja"
 )
 
 func GetLangId(lang string) Lid {
 	switch lang {
-	case zhCNCode:
-		return zhCN
-	case enUSCode:
-		return enUS
-	case jaCode:
-		return ja
+	case ZhCNCode:
+		return ZhCN
+	case EnUSCode:
+		return EnUS
+	case JaCode:
+		return Ja
 	default:
-		return enUS
+		return EnUS
 	}
 }
 
 func (l *Lid) String() string {
 	switch *l {
-	case zhCN:
-		return zhCNCode
-	case enUS:
-		return enUSCode
-	case ja:
-		return jaCode
+	case ZhCN:
+		return ZhCNCode
+	case EnUS:
+		return EnUSCode
+	case Ja:
+		return JaCode
 	default:
-		return enUSCode
+		return EnUSCode
 	}
 }
