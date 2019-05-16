@@ -31,9 +31,12 @@ func (nc *CategoryController) BeforeAction() {
 }
 
 func (nc *CategoryController) List() {
-	var query newsValidator.QueryCategory
+	var (
+		query      newsValidator.QueryCategory
+		categories newsService.CategoryList
+	)
 	_ = nc.ParseForm(&query)
-	categories, err := news_category.FindLimit(query)
+	err := categories.FindLimitCategory(query)
 	if err != nil {
 		nc.QueryErrorJSON(err.Error())
 	}

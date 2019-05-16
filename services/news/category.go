@@ -3,7 +3,10 @@ package news
 import (
 	"ara-news/components/lang"
 	"ara-news/models/news_category"
+	newsValidator "ara-news/validators/news"
 )
+
+type CategoryList []*Category
 
 type Category struct {
 	news_category.Model
@@ -35,6 +38,20 @@ func (c *Category) FindCategoryById(id int64, parseDate ...bool) error {
 		return err
 	}
 	c.parseCategoryField(model, parseDate...)
+
+	return nil
+}
+
+func (list *CategoryList) FindLimitCategory(query newsValidator.QueryCategory) error {
+	models, err := news_category.FindLimit(query)
+	if err != nil {
+		return err
+	}
+	for _, model := range models {
+		var c Category
+		c.parseCategoryField(*model)
+		*list = append(*list, &c)
+	}
 
 	return nil
 }
