@@ -42,10 +42,11 @@ func NewModel(nid int64, content newsValidator.Content) Model {
 	model.LangType = lang.GetLangId(content.Lang)
 	model.Title = template.HTMLEscapeString(content.Title)
 	model.Content = template.HTMLEscapeString(content.Content)
+	var is = 0
 	if content.Default {
-		var is = 1
-		model.IsDefault = &is
+		is = 1
 	}
+	model.IsDefault = &is
 
 	return model
 }
