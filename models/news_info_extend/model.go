@@ -32,8 +32,12 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 }
 
 func NewModel(nid int64) Model {
-	var model Model
+	var (
+		model     Model
+		viewCount int64 = 0
+	)
 	model.Nid = nid
+	model.ViewCount = &viewCount
 
 	return model
 }
@@ -78,4 +82,10 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 	_, err = qs.Limit(pagination.Size, pagination.Limit).All(&models, cols...)
 
 	return models, err
+}
+
+func DeleteByNid(nid int64) (int64, error) {
+	o := mysql.GetOrmer("master")
+
+	return o.Delete(&Model{Nid: nid}, "nid")
 }

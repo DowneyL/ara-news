@@ -108,3 +108,14 @@ func FindLimit(query newsValidator.Query) ([]*ListDetail, error) {
 
 	return list, nil
 }
+
+func DeleteById(id int64) error {
+	_, err := news_info.DeleteById(id)
+	if err != nil {
+		return err
+	}
+	_, _ = news_content.DeleteByNId(id)
+	_, _ = news_info_extend.DeleteByNid(id)
+
+	return nil
+}

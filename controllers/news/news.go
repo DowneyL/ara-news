@@ -81,3 +81,13 @@ func (c *Controller) CreateContent() {
 
 	c.SuccessJSON(helper.NewInsertId(contentId))
 }
+
+func (c *Controller) Delete() {
+	id := helper.StringToInt64(c.Ctx.Input.Param(":id"))
+	err := newsService.DeleteById(id)
+	if err != nil {
+		c.QueryErrorJSON(err.Error())
+	}
+
+	c.SuccessJSON(struct{}{})
+}
