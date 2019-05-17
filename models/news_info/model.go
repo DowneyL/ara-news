@@ -106,13 +106,16 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 	qs := InitQuerySetter()
 
 	if len(query.Ids) > 0 {
-		_, err = qs.Filter("id__in", query.Ids).All(&models)
+		_, err = qs.Filter("id__in", query.Ids).Filter("is_hidden", 0).All(&models)
 		return models, err
 	}
 
 	if query.Author != "" {
 		qs = qs.Filter("author", query.Author)
 	}
+
+	qs = qs.Filter("is_hidden", 0)
+
 	if query.OrderBy != "" {
 		orders, err := helper.GetOrmOrders(query.OrderBy)
 		if err != nil {
@@ -120,8 +123,9 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 		}
 		qs = qs.OrderBy(orders...)
 	} else {
-		qs = qs.OrderBy("-published_at")
+		qs = qs.OrderBy("-published_at", "-id")
 	}
+
 	pagination := boot.GetPagination()
 	_, err = qs.Limit(pagination.Size, pagination.Limit).All(&models, cols...)
 

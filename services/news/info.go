@@ -1,6 +1,10 @@
 package news
 
-import "ara-news/models/news_info"
+import (
+	"ara-news/helper"
+	"ara-news/models/news_info"
+	newsValidator "ara-news/validators/news"
+)
 
 type Info struct {
 	news_info.Model
@@ -9,6 +13,8 @@ type Info struct {
 	CreatedDate   string `json:"created_date"`
 	UpdatedDate   string `json:"updated_date"`
 }
+
+type InfoList []*Info
 
 func (i *Info) parseField(info news_info.Model) {
 	i.Model = info
@@ -26,4 +32,29 @@ func (i *Info) FindById(id int64) error {
 	i.parseField(info)
 
 	return nil
+}
+
+func (il *InfoList) FindLimit(query newsValidator.Query) error {
+	models, err := news_info.FindLimit(query)
+	if err != nil {
+		return nil
+	}
+
+	for _, model := range models {
+		var info Info
+		info.parseField(*model)
+		*il = append(*il, &info)
+	}
+
+	return nil
+}
+
+func (il *InfoList) GetAllId() (ids []int64, cIds []int64) {
+	for _, info := range *il {
+		ids = append(ids, info.Id)
+		cIds = append(cIds, info.Cid)
+	}
+	cIds = helper.RmDuplicate(cIds)
+
+	return
 }

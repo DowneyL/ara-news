@@ -6,12 +6,20 @@ import (
 	"ara-news/models/news_info"
 	"ara-news/models/news_info_extend"
 	newsValidator "ara-news/validators/news"
+	"fmt"
 )
 
 type Detail struct {
 	Info
 	Category Category `json:"category"`
 	Contents Contents `json:"contents"`
+	Extend   Extend   `json:"extend"`
+}
+
+type ListDetail struct {
+	Info
+	Category Category `json:"category"`
+	Content  Content  `json:"content"`
 	Extend   Extend   `json:"extend"`
 }
 
@@ -47,4 +55,56 @@ func FindById(id int64) (Detail, error) {
 	_ = detail.Category.FindById(detail.Info.Cid)
 
 	return detail, nil
+}
+
+func FindLimit(query newsValidator.Query) ([]*ListDetail, error) {
+	var (
+		infoList   InfoList
+		contents   Contents
+		extends    Extends
+		categories Categories
+		list       []*ListDetail
+	)
+	err := infoList.FindLimit(query)
+	if err != nil {
+		return list, err
+	}
+
+	ids, cids := infoList.GetAllId()
+	query.Ids = ids
+	err = contents.FindLimit(query)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	err = extends.FindLimit(query)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	queryCategory := newsValidator.QueryCategory{CIds: cids}
+	err = categories.FindLimit(queryCategory)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	contentMap := contents.ParseToMap()
+	extendMap := extends.ParseToMap()
+	categoryMap := categories.ParseToMap()
+
+	for _, info := range infoList {
+		var ld ListDetail
+		ld.Info = *info
+		if content, ok := contentMap[info.Id]; ok {
+			ld.Content = *content
+		}
+		if extend, ok := extendMap[info.Id]; ok {
+			ld.Extend = *extend
+		}
+		if category, ok := categoryMap[info.Cid]; ok {
+			ld.Category = *category
+		}
+
+		list = append(list, &ld)
+	}
+
+	return list, nil
 }

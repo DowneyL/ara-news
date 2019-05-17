@@ -37,8 +37,17 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 }
 
 func FindLimit(query newsValidator.QueryCategory) ([]*Model, error) {
-	var categories []*Model
+	var (
+		categories []*Model
+		err        error
+	)
 	qs := InitQuerySetter()
+
+	if len(query.CIds) > 0 {
+		_, err = qs.Filter("id__in", query.CIds).All(&categories)
+		return categories, err
+	}
+
 	pagination := boot.GetPagination()
 	if query.Code != "" {
 		qs = qs.Filter("code", query.Code)

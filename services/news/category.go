@@ -55,3 +55,12 @@ func (list *Categories) FindLimit(query newsValidator.QueryCategory) error {
 
 	return nil
 }
+
+func (list *Categories) ParseToMap() map[int64]*Category {
+	categoryMap := make(map[int64]*Category, len(*list))
+	for _, category := range *list {
+		categoryMap[category.Id] = category
+	}
+
+	return categoryMap
+}

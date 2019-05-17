@@ -17,7 +17,8 @@ type CategoryIds struct {
 }
 
 type QueryCategory struct {
-	Code   string `form:"code" validate:"max=50"`
-	NameZH string `form:"name_zh" validate:"max=100"`
-	NameEN string `form:"name_en" validate:"max=100"`
+	CIds   []int64 `form:"cids" json:"cids" validate:"-"`
+	Code   string  `form:"code" json:"code" validate:"max=50"`
+	NameZH string  `form:"name_zh" json:"name_zh" validate:"max=100"`
+	NameEN string  `form:"name_en" json:"name_en" validate:"max=100"`
 }

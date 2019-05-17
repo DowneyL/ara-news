@@ -13,7 +13,7 @@ import (
 type Model struct {
 	Id        int64      `json:"id,omitempty"`
 	Nid       int64      `json:"-"`
-	IsDefault int        `json:"is_default"`
+	IsDefault *int       `json:"is_default,omitempty"`
 	LangType  lang.Types `json:"-"`
 	Title     string     `json:"title,omitempty"`
 	Content   string     `json:"content,omitempty"`
@@ -43,7 +43,8 @@ func NewModel(nid int64, content newsValidator.Content) Model {
 	model.Title = template.HTMLEscapeString(content.Title)
 	model.Content = template.HTMLEscapeString(content.Content)
 	if content.Default {
-		model.IsDefault = 1
+		var is = 1
+		model.IsDefault = &is
 	}
 
 	return model

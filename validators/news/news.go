@@ -23,7 +23,7 @@ type Content struct {
 }
 
 type Query struct {
-	Ids     []int64 `json:"ids"`
-	Author  string  `json:"author"`
-	OrderBy string  `json:"order_by"`
+	Ids     []int64 `json:"ids" validate:"-"`
+	Author  string  `json:"author" validate:"-"`
+	OrderBy string  `json:"order_by" validate:"-"`
 }
