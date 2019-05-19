@@ -6,7 +6,6 @@ import (
 	"ara-news/models/news_info"
 	"ara-news/models/news_info_extend"
 	newsValidator "ara-news/validators/news"
-	"fmt"
 )
 
 type Detail struct {
@@ -72,19 +71,10 @@ func FindLimit(query newsValidator.Query) ([]*ListDetail, error) {
 
 	ids, cids := infoList.GetAllId()
 	query.Ids = ids
-	err = contents.FindLimit(query)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	err = extends.FindLimit(query)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	_ = contents.FindLimit(query)
+	_ = extends.FindLimit(query)
 	queryCategory := newsValidator.QueryCategory{CIds: cids}
-	err = categories.FindLimit(queryCategory)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	_ = categories.FindLimit(queryCategory)
 
 	contentMap := contents.ParseToMap()
 	extendMap := extends.ParseToMap()
