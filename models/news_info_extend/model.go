@@ -84,6 +84,16 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 	return models, err
 }
 
+func TransactionDeleteByNid(o orm.Ormer, nid int64) (int64, error) {
+	i, err := o.Delete(&Model{Nid: nid}, "nid")
+	if err != nil {
+		_ = o.Rollback()
+		return 0, err
+	}
+
+	return i, nil
+}
+
 func DeleteByNid(nid int64) (int64, error) {
 	o := mysql.GetOrmer("master")
 

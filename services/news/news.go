@@ -110,12 +110,21 @@ func FindLimit(query newsValidator.Query) ([]*ListDetail, error) {
 }
 
 func DeleteById(id int64) error {
-	_, err := news_info.DeleteById(id)
+	o := mysql.GetOrmer("master")
+	err := o.Begin()
+	_, err = news_info.TransactionDeleteById(o, id)
 	if err != nil {
 		return err
 	}
-	_, _ = news_content.DeleteByNId(id)
-	_, _ = news_info_extend.DeleteByNid(id)
+	_, err = news_content.TransactionDeleteByNid(o, id)
+	if err != nil {
+		return err
+	}
+	_, err = news_info_extend.TransactionDeleteByNid(o, id)
+	if err != nil {
+		return err
+	}
+	_ = o.Commit()
 
 	return nil
 }

@@ -102,6 +102,16 @@ func Insert(nid int64, content newsValidator.Content) (int64, error) {
 	return o.Insert(&model)
 }
 
+func TransactionDeleteByNid(o orm.Ormer, nid int64) (int64, error) {
+	i, err := o.Delete(&Model{Nid: nid}, "nid")
+	if err != nil {
+		_ = o.Rollback()
+		return 0, err
+	}
+
+	return i, nil
+}
+
 func DeleteByNId(nid int64) (int64, error) {
 	o := mysql.GetOrmer("master")
 
