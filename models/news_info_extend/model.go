@@ -99,3 +99,10 @@ func DeleteByNid(nid int64) (int64, error) {
 
 	return o.Delete(&Model{Nid: nid}, "nid")
 }
+
+func IncrViewCount(nid int64) (int64, error) {
+	qs := InitQuerySetter("master")
+	return qs.Update(orm.Params{
+		"view_count": orm.ColValue(orm.ColAdd, 1),
+	})
+}

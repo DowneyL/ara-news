@@ -118,3 +118,9 @@ func DeleteById(id int64) error {
 
 	return nil
 }
+
+func IncrViewCount(nid int64) error {
+	_, err := news_info_extend.IncrViewCount(nid)
+
+	return err
+}

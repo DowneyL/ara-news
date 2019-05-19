@@ -49,6 +49,7 @@ func (c *Controller) Detail() {
 		}
 		c.QueryErrorJSON(err.Error())
 	}
+	_ = newsService.IncrViewCount(id)
 
 	c.SuccessJSON(newsDetail)
 }
