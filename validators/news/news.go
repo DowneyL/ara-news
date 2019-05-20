@@ -23,7 +23,8 @@ type Content struct {
 }
 
 type Query struct {
-	Ids     []int64 `json:"ids" validate:"-"`
-	Author  string  `json:"author" validate:"-"`
-	OrderBy string  `json:"order_by" validate:"-"`
+	Ids        []int64 `form:"ids" json:"ids" validate:"-"`
+	CategoryId int64   `form:"category_id" json:"category_id" validate:"-"`
+	Author     string  `form:"author" json:"author" validate:"-"`
+	OrderBy    string  `form:"author" json:"order_by" validate:"-"`
 }

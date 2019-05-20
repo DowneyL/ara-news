@@ -37,7 +37,7 @@ func (i *Info) FindById(id int64) error {
 func (il *InfoList) FindLimit(query newsValidator.Query) error {
 	models, err := news_info.FindLimit(query)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	for _, model := range models {
