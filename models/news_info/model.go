@@ -110,12 +110,14 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 		return models, err
 	}
 
+	if query.Author != "" {
+		qs = qs.Filter("author", query.Author)
+	}
 	if query.CategoryId != 0 {
 		qs = qs.Filter("cid", query.CategoryId)
 	}
-
-	if query.Author != "" {
-		qs = qs.Filter("author", query.Author)
+	if query.Platform != "" {
+		qs = qs.Filter("attribute_set_id", helper.GetAttrSetId(query.Platform))
 	}
 
 	qs = qs.Filter("is_hidden", 0)
