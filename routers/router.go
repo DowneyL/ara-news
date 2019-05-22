@@ -40,6 +40,7 @@ func init() {
 			),
 		),
 		beego.NSNamespace("/help",
+			beego.NSRouter("/content", &help.Controller{}, "post:Create"),
 			beego.NSNamespace("/category",
 				beego.NSRouter("/", &help.CategoryController{}, "post:Create"),
 				beego.NSRouter("/:id([0-9]+)/content", &help.CategoryController{}, "post:CreateContent"),

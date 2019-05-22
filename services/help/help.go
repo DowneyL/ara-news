@@ -14,7 +14,7 @@ func CreateCategory(category helpValidator.Category) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	_, err = help_document_category_content.TransactionInsert(o, id, category.Content)
+	_, err = help_document_category_content.TransactionInsert(o, id, category.CateContent)
 	if err != nil {
 		return 0, err
 	}

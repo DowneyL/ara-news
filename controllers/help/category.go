@@ -36,15 +36,15 @@ func (cc *CategoryController) Create() {
 }
 
 func (cc *CategoryController) CreateContent() {
-	var content helpValidator.Content
+	var cateContent helpValidator.CateContent
 	id := helper.StringToInt64(cc.Ctx.Input.Param(":id"))
 	exist := help_document_category.Exist(id)
 	if !exist {
 		cc.InvalidArgumentJSON()
 	}
 
-	_ = json.Unmarshal(cc.Ctx.Input.RequestBody, &content)
-	i, err := help_document_category_content.Insert(id, content)
+	_ = json.Unmarshal(cc.Ctx.Input.RequestBody, &cateContent)
+	i, err := help_document_category_content.Insert(id, cateContent)
 	if err != nil {
 		cc.QueryErrorJSON(err.Error())
 	}

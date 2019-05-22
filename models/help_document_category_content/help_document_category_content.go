@@ -34,7 +34,7 @@ func InitQuerySetter(genre ...string) orm.QuerySeter {
 	return mysql.GetQuerySetter(&Model{}, alias)
 }
 
-func NewModel(cid int64, c helpValidator.Content) Model {
+func NewModel(cid int64, c helpValidator.CateContent) Model {
 	return Model{
 		Cid:       cid,
 		LangType:  lang.GetLangId(c.Lang),
@@ -44,14 +44,14 @@ func NewModel(cid int64, c helpValidator.Content) Model {
 	}
 }
 
-func Insert(cid int64, cc helpValidator.Content) (int64, error) {
+func Insert(cid int64, cc helpValidator.CateContent) (int64, error) {
 	o := mysql.GetOrmer("master")
 	model := NewModel(cid, cc)
 
 	return o.Insert(&model)
 }
 
-func TransactionInsert(o orm.Ormer, cid int64, c helpValidator.Content) (int64, error) {
+func TransactionInsert(o orm.Ormer, cid int64, c helpValidator.CateContent) (int64, error) {
 	model := NewModel(cid, c)
 	i, err := o.Insert(&model)
 	if err != nil {
