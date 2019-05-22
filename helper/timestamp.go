@@ -23,6 +23,10 @@ func NewTimestamp(unix ...int64) Timestamp {
 	return timestamp
 }
 
+func Now() Timestamp {
+	return NewTimestamp()
+}
+
 func (t *Timestamp) String() string {
 	intTime := reflect.ValueOf(*t).Int()
 
