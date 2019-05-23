@@ -5,6 +5,7 @@ import (
 	"ara-news/helper"
 	"ara-news/models/help_document_category"
 	"ara-news/models/help_document_content"
+	helpService "ara-news/services/help"
 	helpValidator "ara-news/validators/help"
 	"encoding/json"
 )
@@ -18,6 +19,8 @@ func (c *Controller) BeforeAction() {
 	switch action {
 	case "Create":
 		c.ValidJSON(&helpValidator.Content{})
+	case "List":
+		c.ValidForm(&helpValidator.Query{})
 	}
 }
 
@@ -34,4 +37,18 @@ func (c *Controller) Create() {
 	}
 
 	c.SuccessJSON(helper.NewInsertId(i))
+}
+
+func (c *Controller) List() {
+	var (
+		categories helpService.Categories
+		query      helpValidator.Query
+	)
+	_ = c.ParseForm(&query)
+	err := categories.FindLimit(query)
+	if err != nil {
+		c.QueryErrorJSON(err.Error())
+	}
+
+	c.SuccessJSON(categories)
 }

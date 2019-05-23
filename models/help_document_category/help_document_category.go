@@ -65,3 +65,31 @@ func Exist(id int64) bool {
 
 	return qs.Filter("id", id).Exist()
 }
+
+func FindLimit(query helpValidator.Query, cols ...string) ([]*Model, error) {
+	var models []*Model
+	qs := InitQuerySetter()
+
+	if query.Platform != "" {
+		qs = qs.Filter("attribute_set_id", helper.GetAttrSetId(query.Platform))
+	}
+
+	qs = qs.Filter("is_hidden", 0)
+
+	if query.OrderBy != "" {
+		orders, err := helper.GetOrmOrders(query.OrderBy)
+		if err != nil {
+			return models, err
+		}
+		qs = qs.OrderBy(orders...)
+	} else {
+		qs = qs.OrderBy("-seq", "id")
+	}
+
+	i, err := qs.All(&models, cols...)
+	if i == 0 {
+		err = orm.ErrNoRows
+	}
+
+	return models, err
+}

@@ -7,3 +7,8 @@ type Content struct {
 	Answer   string `json:"answer" validate:"required"`
 	Seq      int    `json:"seq" validate:"required"`
 }
+
+type Query struct {
+	Platform string `form:"platform" json:"platform"`
+	OrderBy  string `form:"order_by" json:"order_by"`
+}
