@@ -120,7 +120,7 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 		qs = qs.Filter("attribute_set_id", helper.GetAttrSetId(query.Platform))
 	}
 
-	qs = qs.Filter("is_hidden", 0)
+	qs = qs.Filter("is_hidden", 0).Filter("published_at__lte", helper.Now())
 
 	if query.OrderBy != "" {
 		orders, err := helper.GetOrmOrders(query.OrderBy)

@@ -11,13 +11,6 @@ import (
 type Detail struct {
 	Info
 	Category Category `json:"category"`
-	Contents Contents `json:"contents"`
-	Extend   Extend   `json:"extend"`
-}
-
-type ListDetail struct {
-	Info
-	Category Category `json:"category"`
 	Content  Content  `json:"content"`
 	Extend   Extend   `json:"extend"`
 }
@@ -49,20 +42,20 @@ func FindById(id int64) (Detail, error) {
 	if err != nil {
 		return detail, err
 	}
-	_ = detail.Contents.FindAllByNid(id)
+	_ = detail.Content.FindByNid(id)
 	_ = detail.Extend.FindByNid(id)
 	_ = detail.Category.FindById(detail.Info.Cid)
 
 	return detail, nil
 }
 
-func FindLimit(query newsValidator.Query) ([]*ListDetail, error) {
+func FindLimit(query newsValidator.Query) ([]*Detail, error) {
 	var (
 		infoList   InfoList
 		contents   Contents
 		extends    Extends
 		categories Categories
-		list       []*ListDetail
+		list       []*Detail
 	)
 	err := infoList.FindLimit(query)
 	if err != nil {
@@ -81,7 +74,7 @@ func FindLimit(query newsValidator.Query) ([]*ListDetail, error) {
 	categoryMap := categories.ParseToMap()
 
 	for _, info := range infoList {
-		var ld ListDetail
+		var ld Detail
 		ld.Info = *info
 		if content, ok := contentMap[info.Id]; ok {
 			ld.Content = *content

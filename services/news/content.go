@@ -5,8 +5,6 @@ import (
 	newsValidator "ara-news/validators/news"
 )
 
-type Contents []*Content
-
 type Content struct {
 	news_content.Model
 	Lang string `json:"lang,omitempty"`
@@ -16,6 +14,19 @@ func (c *Content) parseField(model news_content.Model) {
 	c.Model = model
 	c.Lang = model.LangType.String()
 }
+
+func (c *Content) FindByNid(nid int64) error {
+	fields := []string{"id", "lang_type", "title", "content", "is_default"}
+	model, err := news_content.FindByNId(nid, fields...)
+	if err != nil {
+		return err
+	}
+	c.parseField(model)
+
+	return nil
+}
+
+type Contents []*Content
 
 func (cs *Contents) parseField(models []*news_content.Model) {
 	for _, model := range models {

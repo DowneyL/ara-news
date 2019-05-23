@@ -59,6 +59,14 @@ func FindAllByNId(nid int64, cols ...string) ([]*Model, error) {
 	return models, err
 }
 
+func FindByNId(nid int64, cols ...string) (Model, error) {
+	var model Model
+	qs := InitQuerySetter()
+	err := qs.Filter("nid", nid).Filter("lang_type", lang.GetLangId(boot.GetLang())).One(&model, cols...)
+
+	return model, err
+}
+
 func TransactionInsert(o orm.Ormer, nid int64, content newsValidator.Content) error {
 	model := NewModel(nid, content)
 	_, err := o.Insert(&model)
@@ -78,7 +86,7 @@ func FindLimit(query newsValidator.Query, cols ...string) ([]*Model, error) {
 	qs := InitQuerySetter()
 
 	if len(query.Ids) > 0 {
-		_, err = qs.Filter("nid__in", query.Ids).Filter("is_default", 1).All(&models, cols...)
+		_, err = qs.Filter("nid__in", query.Ids).Filter("lang_type", lang.GetLangId(boot.GetLang())).All(&models, cols...)
 		return models, err
 	}
 
