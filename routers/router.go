@@ -13,6 +13,7 @@ import (
 	"ara-news/components/lang"
 	"ara-news/components/pagination"
 	"ara-news/controllers/help"
+	"ara-news/controllers/home"
 	"ara-news/controllers/news"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
@@ -46,6 +47,9 @@ func init() {
 				beego.NSRouter("/", &help.CategoryController{}, "post:Create"),
 				beego.NSRouter("/:id([0-9]+)/content", &help.CategoryController{}, "post:CreateContent"),
 			),
+		),
+		beego.NSNamespace("/home",
+			beego.NSRouter("/", &home.Controller{}, "get:Index"),
 		),
 	)
 
