@@ -1,9 +1,9 @@
 package news
 
 import (
+	newsValidator "ara-news/components/validators/news"
 	"ara-news/helper"
 	"ara-news/models/news_info"
-	newsValidator "ara-news/validators/news"
 )
 
 type Info struct {

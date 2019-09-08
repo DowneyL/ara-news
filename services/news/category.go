@@ -3,8 +3,8 @@ package news
 import (
 	"ara-news/boot"
 	"ara-news/components/lang"
+	newsValidator "ara-news/components/validators/news"
 	"ara-news/models/news_category"
-	newsValidator "ara-news/validators/news"
 )
 
 type Categories []*Category

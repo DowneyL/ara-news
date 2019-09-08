@@ -5,7 +5,7 @@ import (
 	"ara-news/components/lang"
 	"ara-news/components/mysql"
 	"ara-news/components/pagination"
-	"ara-news/validators"
+	"ara-news/components/validators"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"gopkg.in/go-playground/validator.v9"

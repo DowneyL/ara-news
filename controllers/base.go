@@ -3,7 +3,7 @@ package controllers
 import (
 	"ara-news/boot"
 	"ara-news/components/response"
-	"ara-news/validators"
+	"ara-news/components/validators"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"

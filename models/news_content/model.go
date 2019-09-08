@@ -4,8 +4,8 @@ import (
 	"ara-news/boot"
 	"ara-news/components/lang"
 	"ara-news/components/mysql"
+	newsValidator "ara-news/components/validators/news"
 	"ara-news/helper"
-	newsValidator "ara-news/validators/news"
 	"github.com/astaxie/beego/orm"
 	"html/template"
 )

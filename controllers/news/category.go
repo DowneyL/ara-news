@@ -1,11 +1,11 @@
 package news
 
 import (
+	newsValidator "ara-news/components/validators/news"
 	"ara-news/controllers"
 	"ara-news/helper"
 	"ara-news/models/news_category"
 	newsService "ara-news/services/news"
-	newsValidator "ara-news/validators/news"
 	"encoding/json"
 	"github.com/astaxie/beego/orm"
 )

@@ -3,8 +3,8 @@ package help_document_content
 import (
 	"ara-news/components/lang"
 	"ara-news/components/mysql"
+	helpValidator "ara-news/components/validators/help"
 	"ara-news/helper"
-	helpValidator "ara-news/validators/help"
 	"github.com/astaxie/beego/orm"
 )
 

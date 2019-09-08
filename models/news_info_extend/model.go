@@ -3,8 +3,8 @@ package news_info_extend
 import (
 	"ara-news/boot"
 	"ara-news/components/mysql"
+	newsValidator "ara-news/components/validators/news"
 	"ara-news/helper"
-	newsValidator "ara-news/validators/news"
 	"github.com/astaxie/beego/orm"
 )
 

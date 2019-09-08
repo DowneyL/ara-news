@@ -2,10 +2,10 @@ package news
 
 import (
 	"ara-news/components/mysql"
+	newsValidator "ara-news/components/validators/news"
 	"ara-news/models/news_content"
 	"ara-news/models/news_info"
 	"ara-news/models/news_info_extend"
-	newsValidator "ara-news/validators/news"
 )
 
 type Detail struct {

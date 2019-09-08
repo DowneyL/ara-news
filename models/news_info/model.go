@@ -3,9 +3,9 @@ package news_info
 import (
 	"ara-news/boot"
 	"ara-news/components/mysql"
+	newsValidator "ara-news/components/validators/news"
 	"ara-news/helper"
 	"ara-news/models/news_category"
-	newsValidator "ara-news/validators/news"
 	"errors"
 	"github.com/astaxie/beego/orm"
 )

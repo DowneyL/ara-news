@@ -1,8 +1,8 @@
 package help
 
 import (
+	helpValidator "ara-news/components/validators/help"
 	"ara-news/models/help_document_category"
-	helpValidator "ara-news/validators/help"
 )
 
 type Categories []*Category

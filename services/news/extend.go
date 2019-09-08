@@ -1,8 +1,8 @@
 package news
 
 import (
+	newsValidator "ara-news/components/validators/news"
 	"ara-news/models/news_info_extend"
-	newsValidator "ara-news/validators/news"
 )
 
 type Extends []*Extend

@@ -2,9 +2,9 @@ package help
 
 import (
 	"ara-news/components/mysql"
+	helpValidator "ara-news/components/validators/help"
 	"ara-news/models/help_document_category"
 	"ara-news/models/help_document_category_content"
-	helpValidator "ara-news/validators/help"
 )
 
 func CreateCategory(category helpValidator.Category) (int64, error) {

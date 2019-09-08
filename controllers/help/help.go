@@ -1,12 +1,12 @@
 package help
 
 import (
+	helpValidator "ara-news/components/validators/help"
 	"ara-news/controllers"
 	"ara-news/helper"
 	"ara-news/models/help_document_category"
 	"ara-news/models/help_document_content"
 	helpService "ara-news/services/help"
-	helpValidator "ara-news/validators/help"
 	"encoding/json"
 )
 
